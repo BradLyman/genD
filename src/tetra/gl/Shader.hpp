@@ -32,8 +32,9 @@ public:
   /** create a new shader object with the given type */
   Shader(Type type);
   ~Shader();
+  Shader(Shader&& from);
+  Shader& operator=(Shader&& from);
   Shader(Shader& from) = delete;
-  Shader(Shader&& from) = delete;
 
   GLuint handle() const;
 

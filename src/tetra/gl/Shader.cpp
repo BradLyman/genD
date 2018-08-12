@@ -9,9 +9,17 @@ using namespace std;
 
 Shader::CompileError::CompileError(const string& msg) : runtime_error{msg} {}
 
+Shader::Shader(Shader&& from) : id{0} { swap(id, from.id); }
+
 Shader::Shader(Shader::Type type)
   : id{glCreateShader(static_cast<GLenum>(type))}
 {
+}
+
+Shader& Shader::operator=(Shader&& from)
+{
+  swap(id, from.id);
+  return *this;
 }
 
 Shader::~Shader() { glDeleteShader(id); }
