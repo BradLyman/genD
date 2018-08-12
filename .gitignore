@@ -1,0 +1,9 @@
+CMakeCache.txt
+compile_commands.json
+graph
+Makefile
+cmake_install.cmake
+
+CMakeFiles/
+
+*.swp
