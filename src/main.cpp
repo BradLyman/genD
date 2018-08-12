@@ -24,14 +24,16 @@ void sdl_app_main();
  */
 int main(int argc, char* argv[])
 {
-  struct SdlAutoQuit {
-    ~SdlAutoQuit() { SDL_Quit(); }
-  } quitOnExit{};
-  if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
-    cout << "SDL Error: " << SDL_GetError() << endl;
-    return 1;
+  try {
+    if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
+      SdlError::throwIfFound();
+    }
+    sdl_app_main();
+    SDL_Quit();
+  } catch (...) {
+    SDL_Quit();
+    throw;
   }
-  sdl_app_main();
   return 0;
 }
 
