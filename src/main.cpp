@@ -1,5 +1,6 @@
 #include <glad/glad.h>
 
+#include "tetra/GlApp.hpp"
 #include "tetra/sdl/SdlError.hpp"
 #include "tetra/sdl/Window.hpp"
 
@@ -10,42 +11,17 @@
 #include <thread>
 
 using namespace std;
+using tetra::GlApp;
 using tetra::SdlError;
 using tetra::Window;
 
-/** use SDL to load opengl function pointers for the current context */
-void load_gl_functions()
-{
-  if (!gladLoadGLLoader(&SDL_GL_GetProcAddress)) {
-    throw std::runtime_error{"could not load opengl procs"};
-  }
-}
+void load_gl_functions();
+void sdl_app_main();
 
-void app()
-{
-  auto window = Window{SDL_CreateWindow(
-    "float-me",
-    SDL_WINDOWPOS_UNDEFINED,
-    SDL_WINDOWPOS_UNDEFINED,
-    600,
-    800,
-    SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL)};
-  window.make_context_current();
-
-  load_gl_functions();
-
-  glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
-  bool quit = false;
-  while (!quit) {
-    SDL_Event e{};
-    while (SDL_PollEvent(&e) != 0) {
-      quit = (e.type == SDL_QUIT);
-    }
-    glClear(GL_COLOR_BUFFER_BIT);
-    window.swap_gl();
-  }
-}
-
+/**
+ * Program entrypoint.
+ * CLI arguments are not used.
+ */
 int main(int argc, char* argv[])
 {
   struct SdlAutoQuit {
@@ -55,6 +31,43 @@ int main(int argc, char* argv[])
     cout << "SDL Error: " << SDL_GetError() << endl;
     return 1;
   }
-  app();
+  sdl_app_main();
   return 0;
+}
+
+/**
+ * The entrypoint for my sdl application. the SDL library is initialized for the
+ * entire lifetime of this function.
+ */
+void sdl_app_main()
+{
+  auto window = Window{SDL_CreateWindow(
+    "float-me",
+    SDL_WINDOWPOS_UNDEFINED,
+    SDL_WINDOWPOS_UNDEFINED,
+    1920,
+    1080,
+    SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL)};
+  window.make_context_current();
+  load_gl_functions();
+
+  GlApp myGlApp{};
+
+  bool quit = false;
+  while (!quit) {
+    SDL_Event e{};
+    while (SDL_PollEvent(&e) != 0) {
+      quit = (e.type == SDL_QUIT);
+    }
+    myGlApp.render_frame();
+    window.swap_gl();
+  }
+}
+
+/** use SDL to load opengl function pointers for the current context */
+void load_gl_functions()
+{
+  if (!gladLoadGLLoader(&SDL_GL_GetProcAddress)) {
+    throw std::runtime_error{"could not load opengl procs"};
+  }
 }

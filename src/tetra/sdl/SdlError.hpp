@@ -6,6 +6,9 @@
 
 namespace tetra
 {
+/**
+ * Objects of this class represent an error within the SDL runtime.
+ */
 class SdlError : public std::runtime_error
 {
 public:
