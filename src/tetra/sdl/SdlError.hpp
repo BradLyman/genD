@@ -6,13 +6,10 @@
 
 namespace tetra
 {
-/**
- * Exception signifying an unexpected SDL error.
- */
 class SdlError : public std::runtime_error
 {
 public:
-  SdlError(const std::string &msg);
+  SdlError(const std::string& msg);
 
   /**
    * Throw an SdlError if SDL_GetError returns a non empty string.

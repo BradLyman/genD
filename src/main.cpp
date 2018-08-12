@@ -1,6 +1,9 @@
-#include <SDL.h>
-#include <SdlError.hpp>
 #include <glad/glad.h>
+
+#include "tetra/sdl/SdlError.hpp"
+#include "tetra/sdl/Window.hpp"
+
+#include <SDL.h>
 #include <iostream>
 #include <memory>
 #include <stdexcept>
@@ -8,39 +11,29 @@
 
 using namespace std;
 using tetra::SdlError;
+using tetra::Window;
 
-struct SdlGl {
-  inline ~SdlGl() { SDL_GL_DeleteContext(gl); }
-
-  SDL_GLContext gl;
-};
-
-class Window
+/** use SDL to load opengl function pointers for the current context */
+void load_gl_functions()
 {
-private:
-public:
-};
-
-void app()
-{
-  auto window = unique_ptr<SDL_Window, decltype(&SDL_DestroyWindow)>{
-      SDL_CreateWindow(
-          "float-me",
-          SDL_WINDOWPOS_UNDEFINED,
-          SDL_WINDOWPOS_UNDEFINED,
-          600,
-          800,
-          SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL),
-      &SDL_DestroyWindow};
-  if (!window)
-    SdlError::throwIfFound();
-
-  SdlGl context{SDL_GL_CreateContext(window.get())};
-  SDL_GL_MakeCurrent(window.get(), context.gl);
-
   if (!gladLoadGLLoader(&SDL_GL_GetProcAddress)) {
     throw std::runtime_error{"could not load opengl procs"};
   }
+}
+
+void app()
+{
+  auto window = Window{SDL_CreateWindow(
+    "float-me",
+    SDL_WINDOWPOS_UNDEFINED,
+    SDL_WINDOWPOS_UNDEFINED,
+    600,
+    800,
+    SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL)};
+  window.make_context_current();
+
+  load_gl_functions();
+
   glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
   bool quit = false;
   while (!quit) {
@@ -49,16 +42,15 @@ void app()
       quit = (e.type == SDL_QUIT);
     }
     glClear(GL_COLOR_BUFFER_BIT);
-    SDL_GL_SwapWindow(window.get());
+    window.swap_gl();
   }
 }
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
   struct SdlAutoQuit {
     ~SdlAutoQuit() { SDL_Quit(); }
-  };
-  SdlAutoQuit quitOnExit{};
+  } quitOnExit{};
   if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
     cout << "SDL Error: " << SDL_GetError() << endl;
     return 1;
