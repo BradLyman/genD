@@ -24,17 +24,17 @@ void sdl_app_main();
  */
 int main(int argc, char* argv[])
 {
-  try {
-    if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
-      SdlError::throwIfFound();
+    try {
+        if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
+            SdlError::throwIfFound();
+        }
+        sdl_app_main();
+        SDL_Quit();
+    } catch (...) {
+        SDL_Quit();
+        throw;
     }
-    sdl_app_main();
-    SDL_Quit();
-  } catch (...) {
-    SDL_Quit();
-    throw;
-  }
-  return 0;
+    return 0;
 }
 
 /**
@@ -43,33 +43,33 @@ int main(int argc, char* argv[])
  */
 void sdl_app_main()
 {
-  auto window = Window{SDL_CreateWindow(
-    "float-me",
-    SDL_WINDOWPOS_UNDEFINED,
-    SDL_WINDOWPOS_UNDEFINED,
-    1920,
-    1080,
-    SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL)};
-  window.make_context_current();
-  load_gl_functions();
+    auto window = Window{SDL_CreateWindow(
+        "float-me",
+        SDL_WINDOWPOS_UNDEFINED,
+        SDL_WINDOWPOS_UNDEFINED,
+        1920,
+        1080,
+        SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL)};
+    window.make_context_current();
+    load_gl_functions();
 
-  GlApp myGlApp{};
+    GlApp myGlApp{};
 
-  bool quit = false;
-  while (!quit) {
-    SDL_Event e{};
-    while (SDL_PollEvent(&e) != 0) {
-      quit = (e.type == SDL_QUIT);
+    bool quit = false;
+    while (!quit) {
+        SDL_Event e{};
+        while (SDL_PollEvent(&e) != 0) {
+            quit = (e.type == SDL_QUIT);
+        }
+        myGlApp.render_frame();
+        window.swap_gl();
     }
-    myGlApp.render_frame();
-    window.swap_gl();
-  }
 }
 
 /** use SDL to load opengl function pointers for the current context */
 void load_gl_functions()
 {
-  if (!gladLoadGLLoader(&SDL_GL_GetProcAddress)) {
-    throw std::runtime_error{"could not load opengl procs"};
-  }
+    if (!gladLoadGLLoader(&SDL_GL_GetProcAddress)) {
+        throw std::runtime_error{"could not load opengl procs"};
+    }
 }

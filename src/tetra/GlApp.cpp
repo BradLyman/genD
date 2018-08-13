@@ -12,33 +12,33 @@ namespace tetra
 {
 class Program
 {
-public:
-  class LinkError : public std::runtime_error
-  {
   public:
-    LinkError(const std::string& msg);
-  };
+    class LinkError : public std::runtime_error
+    {
+      public:
+        LinkError(const std::string& msg);
+    };
 
-public:
-  Program();
-  ~Program();
-  Program(Program&& from);
-  Program& operator=(Program&& from);
-  Program(Program& from) = delete;
+  public:
+    Program();
+    ~Program();
+    Program(Program&& from);
+    Program& operator=(Program&& from);
+    Program(Program& from) = delete;
 
-  GLuint handle() const;
+    GLuint handle() const;
 
-  Program& attach(Shader&& shader);
+    Program& attach(Shader&& shader);
 
-  void link();
+    void link();
 
-private:
-  bool linkFailed();
-  void throwLinkError();
+  private:
+    bool linkFailed();
+    void throwLinkError();
 
-private:
-  GLuint id;
-  std::vector<Shader> shaders;
+  private:
+    GLuint id;
+    std::vector<Shader> shaders;
 };
 } // namespace tetra
 
@@ -51,47 +51,47 @@ Program::Program(Program&& from) : id{0} { swap(id, from.id); }
 
 Program& Program::operator=(Program&& from)
 {
-  swap(id, from.id);
-  return *this;
+    swap(id, from.id);
+    return *this;
 }
 
 GLuint Program::handle() const { return id; }
 
 Program& Program::attach(Shader&& shader)
 {
-  shaders.emplace_back(move(shader));
-  return *this;
+    shaders.emplace_back(move(shader));
+    return *this;
 }
 
 void Program::link()
 {
-  for (auto& shader : shaders) {
-    shader.compile();
-    glAttachShader(handle(), shader.handle());
-  }
-  glLinkProgram(handle());
-  shaders.clear();
-  if (linkFailed()) {
-    throwLinkError();
-  }
+    for (auto& shader : shaders) {
+        shader.compile();
+        glAttachShader(handle(), shader.handle());
+    }
+    glLinkProgram(handle());
+    shaders.clear();
+    if (linkFailed()) {
+        throwLinkError();
+    }
 }
 
 bool Program::linkFailed()
 {
-  GLint status = GL_FALSE;
-  glGetProgramiv(handle(), GL_LINK_STATUS, &status);
-  return (status == GL_FALSE);
+    GLint status = GL_FALSE;
+    glGetProgramiv(handle(), GL_LINK_STATUS, &status);
+    return (status == GL_FALSE);
 }
 
 void Program::throwLinkError()
 {
-  GLint logLength = 0;
-  glGetProgramiv(handle(), GL_INFO_LOG_LENGTH, &logLength);
+    GLint logLength = 0;
+    glGetProgramiv(handle(), GL_INFO_LOG_LENGTH, &logLength);
 
-  auto buffer = make_unique<char[]>(logLength);
-  glGetProgramInfoLog(handle(), logLength, &logLength, buffer.get());
+    auto buffer = make_unique<char[]>(logLength);
+    glGetProgramInfoLog(handle(), logLength, &logLength, buffer.get());
 
-  throw LinkError(string(buffer.get()));
+    throw LinkError(string(buffer.get()));
 }
 
 Program::LinkError::LinkError(const string& msg) : runtime_error(msg) {}
@@ -121,10 +121,10 @@ GlApp::~GlApp() {}
 
 void GlApp::render_frame()
 {
-  Program program{};
-  program.attach(Shader(vertexSource, Shader::Type::Vertex))
-    .attach(Shader(fragSource, Shader::Type::Fragment))
-    .link();
+    Program program{};
+    program.attach(Shader(vertexSource, Shader::Type::Vertex))
+        .attach(Shader(fragSource, Shader::Type::Fragment))
+        .link();
 
-  glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT);
 }

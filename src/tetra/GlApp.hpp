@@ -5,14 +5,14 @@ namespace tetra
 {
 class GlApp
 {
-public:
-  GlApp();
-  ~GlApp();
+  public:
+    GlApp();
+    ~GlApp();
 
-  void render_frame();
+    void render_frame();
 
-private:
-  // ??
+  private:
+    // ??
 };
 } // namespace tetra
 

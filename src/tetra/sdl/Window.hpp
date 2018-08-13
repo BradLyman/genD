@@ -12,22 +12,22 @@ namespace tetra
  */
 class Window
 {
-public:
-  /**
-   * Create an instance of the class.
-   * Throws an SdlError if there was an error while creating the window.
-   */
-  Window(SDL_Window* window);
+  public:
+    /**
+     * Create an instance of the class.
+     * Throws an SdlError if there was an error while creating the window.
+     */
+    Window(SDL_Window* window);
 
-  /** make the opengl context current */
-  void make_context_current();
+    /** make the opengl context current */
+    void make_context_current();
 
-  /** swap the opengl buffer for the current window */
-  void swap_gl();
+    /** swap the opengl buffer for the current window */
+    void swap_gl();
 
-private:
-  SDL_GLContext gl;
-  std::unique_ptr<SDL_Window, decltype(&SDL_DestroyWindow)> window;
+  private:
+    SDL_GLContext gl;
+    std::unique_ptr<SDL_Window, decltype(&SDL_DestroyWindow)> window;
 };
 } // namespace tetra
 
