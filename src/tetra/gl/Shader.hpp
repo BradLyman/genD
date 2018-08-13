@@ -1,6 +1,8 @@
 #ifndef TETRA_GL_SHADER_HPP
 #define TETRA_GL_SHADER_HPP
 
+#include <glad/glad.h>
+
 #include <stdexcept>
 #include <string>
 
@@ -30,7 +32,7 @@ public:
 
 public:
   /** create a new shader object with the given type */
-  Shader(Type type);
+  Shader(const std::string& source, Type type);
   ~Shader();
   Shader(Shader&& from);
   Shader& operator=(Shader&& from);
@@ -39,15 +41,16 @@ public:
   GLuint handle() const;
 
   /** Compile the shader source, throws a CompileError if there is an error. */
-  void compile(const std::string& source);
+  void compile();
 
 private:
-  void setSource(const std::string& source);
+  void setSource();
   bool failedToCompile();
-  void throwCompileError(const std::string& source);
+  void throwCompileError();
 
 private:
   GLuint id;
+  std::string source;
 };
 } // namespace tetra
 

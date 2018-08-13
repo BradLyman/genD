@@ -9,10 +9,14 @@ using namespace std;
 
 Shader::CompileError::CompileError(const string& msg) : runtime_error{msg} {}
 
-Shader::Shader(Shader&& from) : id{0} { swap(id, from.id); }
+Shader::Shader(Shader&& from) : id{0}, source{}
+{
+  swap(id, from.id);
+  swap(source, from.source);
+}
 
-Shader::Shader(Shader::Type type)
-  : id{glCreateShader(static_cast<GLenum>(type))}
+Shader::Shader(const std::string& source, Shader::Type type)
+  : id{glCreateShader(static_cast<GLenum>(type))}, source{source}
 {
 }
 
@@ -24,16 +28,16 @@ Shader& Shader::operator=(Shader&& from)
 
 Shader::~Shader() { glDeleteShader(id); }
 
-void Shader::compile(const string& source)
+void Shader::compile()
 {
-  setSource(source);
+  setSource();
   glCompileShader(handle());
   if (failedToCompile()) {
-    throwCompileError(source);
+    throwCompileError();
   }
 }
 
-void Shader::setSource(const string& source)
+void Shader::setSource()
 {
   const GLchar* src = source.data();
   glShaderSource(handle(), 1, &src, nullptr);
@@ -46,7 +50,7 @@ bool Shader::failedToCompile()
   return !status;
 }
 
-void Shader::throwCompileError(const string& src)
+void Shader::throwCompileError()
 {
   GLint logSize = 0;
   glGetShaderiv(handle(), GL_INFO_LOG_LENGTH, &logSize);
@@ -55,7 +59,7 @@ void Shader::throwCompileError(const string& src)
   glGetShaderInfoLog(handle(), logSize, &logSize, buffer.get());
 
   throw CompileError(
-    "Error " + string(buffer.get()) + " for shader: '" + src + "'");
+    "Error " + string(buffer.get()) + " for shader: '" + source + "'");
 }
 
 GLuint Shader::handle() const { return id; }
