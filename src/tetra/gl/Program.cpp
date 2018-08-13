@@ -54,4 +54,9 @@ void Program::throwLinkError()
     throw LinkError(string(buffer.get()));
 }
 
+GLint Program::attribIndex(const string& attrib) const
+{
+    return glGetAttribLocation(handle(), attrib.c_str());
+}
+
 Program::LinkError::LinkError(const string& msg) : runtime_error(msg) {}

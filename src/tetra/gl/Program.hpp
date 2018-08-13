@@ -43,6 +43,8 @@ class Program
     /** Link the shaders and throw any errors. */
     void link();
 
+    GLint attribIndex(const std::string& attrib) const;
+
   private:
     bool linkFailed();
     void throwLinkError();
