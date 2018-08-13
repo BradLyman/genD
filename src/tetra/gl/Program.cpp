@@ -2,8 +2,9 @@
 
 #include <memory>
 
-using namespace tetra;
 using namespace std;
+using tetra::Program;
+using tetra::Shader;
 
 Program::Program() : id{glCreateProgram()} {}
 Program::~Program() { glDeleteProgram(id); }
