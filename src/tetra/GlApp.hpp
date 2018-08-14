@@ -15,10 +15,15 @@ class GlApp
 
     void render_frame();
 
+    void on_viewport_change(int width, int height);
+
   private:
+    GLint viewSizeUniform;
     Program program;
     Buffer vertices;
     VAO vao;
+
+    std::array<float, 2> view;
 };
 } // namespace tetra
 

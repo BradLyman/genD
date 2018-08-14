@@ -2,6 +2,7 @@
 
 #include "tetra/GlApp.hpp"
 #include "tetra/sdl/SdlError.hpp"
+#include "tetra/sdl/SdlEventPump.hpp"
 #include "tetra/sdl/Window.hpp"
 
 #include <SDL.h>
@@ -13,6 +14,7 @@
 using namespace std;
 using tetra::GlApp;
 using tetra::SdlError;
+using tetra::SDLEventPump;
 using tetra::Window;
 
 void load_gl_functions();
@@ -69,16 +71,7 @@ void sdl_app_main()
     load_gl_functions();
 
     GlApp myGlApp{};
-
-    bool quit = false;
-    while (!quit) {
-        SDL_Event e{};
-        while (SDL_PollEvent(&e) != 0) {
-            quit = (e.type == SDL_QUIT);
-        }
-        myGlApp.render_frame();
-        window.swap_gl();
-    }
+    SDLEventPump<GlApp>(window, myGlApp).run_until_quit();
 }
 
 /** use SDL to load opengl function pointers for the current context */
