@@ -39,23 +39,16 @@ const char* fragSource = R"src(
   }
 )src";
 
-GlApp::GlApp() { glClearColor(0.2f, 0.2f, 0.4f, 1.0f); }
-GlApp::~GlApp() {}
+struct Vertex {
+    array<float, 4> position;
+    array<float, 4> color;
+};
 
-void GlApp::render_frame()
+GlApp::GlApp()
 {
-    Program program{};
     program.attach(Shader(vertexSource, Shader::Type::Vertex));
     program.attach(Shader(fragSource, Shader::Type::Fragment));
     program.link();
-
-    struct Vertex {
-        array<float, 4> position;
-        array<float, 4> color;
-    };
-
-    VAO vao{};
-    Buffer vertices{};
 
     vao.whileBound([&]() {
         glBindBuffer(GL_ARRAY_BUFFER, vertices.handle());
@@ -64,6 +57,12 @@ void GlApp::render_frame()
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     });
 
+    glClearColor(0.2f, 0.2f, 0.4f, 1.0f);
+}
+GlApp::~GlApp() {}
+
+void GlApp::render_frame()
+{
     vertices.write<Vertex>(
         {{{0.0f, 0.0f, 0.0f, 1.0f}, {1.0f, 0.0f, 0.0f, 1.0f}},
          {{-0.5f, 0.0f, 0.0f, 1.0f}, {0.0f, 1.0f, 0.0f, 1.0f}},
@@ -71,7 +70,7 @@ void GlApp::render_frame()
 
     glClear(GL_COLOR_BUFFER_BIT);
 
-    vao.whileBound([&program]() {
+    vao.whileBound([&]() {
         glUseProgram(program.handle());
         glDrawArrays(GL_TRIANGLES, 0, 3);
         glUseProgram(0);
