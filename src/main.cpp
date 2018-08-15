@@ -71,6 +71,7 @@ void sdl_app_main()
     load_gl_functions();
 
     GlApp myGlApp{};
+    myGlApp.on_viewport_change(1920, 1080);
     SDLEventPump<GlApp>(window, myGlApp).run_until_quit();
 }
 
