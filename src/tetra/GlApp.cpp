@@ -2,67 +2,43 @@
 
 #include "GlApp.hpp"
 
+#include "Countdown.hpp"
 #include "Mat4x4.hpp"
+#include "Turtle.hpp"
 
 #include <cmath>
+#include <iostream>
+#include <stack>
+#include <thread>
 
 using namespace tetra;
 using namespace std;
 
-class Turtle
+string step(const string& seed)
 {
-  public:
-    void reset();
-
-    void turn(float deg);
-
-    void forward();
-
-    void set_step_size(float f);
-
-    const std::vector<ColoredLine::Vertex>& primitive_geometry() const;
-
-  private:
-    std::vector<ColoredLine::Vertex> vertices;
-    std::array<float, 2> pos = {0.0f, 0.0f};
-    float angle = 90.0f * 3.14159f / 180.0f;
-    float step = 1.0f;
-};
-
-void Turtle::reset() { vertices.clear(); }
-
-void Turtle::forward()
-{
-    static std::array<float, 4> white = {1.0f, 1.0f, 1.0f, 1.0f};
-    std::array<float, 2> nextPos = {pos[0] + cos(angle) * step,
-                                    pos[1] + sin(angle) * step};
-
-    vertices.push_back(ColoredLine::Vertex{pos, white});
-    vertices.push_back(ColoredLine::Vertex{nextPos, white});
-    pos = nextPos;
-}
-
-void Turtle::turn(float deg) { angle += (deg * 3.14159f / 180.0f); }
-
-void Turtle::set_step_size(float step) { this->step = step; }
-
-const vector<ColoredLine::Vertex>& Turtle::primitive_geometry() const
-{
-    return vertices;
+    string result;
+    for (char c : seed) {
+        if (c == 'x') {
+            switch (rand() % 2) {
+            case 1:
+                result += "f[+x][-x]";
+                break;
+            case 0:
+                result += "x[+fx[+f][-x]][-fx]";
+                break;
+            }
+        } else if (c == 'f') {
+            result += "ff";
+        } else {
+            result += c;
+        }
+    }
+    return result;
 }
 
 GlApp::GlApp() : view{identity()}, line{}
 {
     glClearColor(0.15f, 0.15f, 0.15f, 1.0f);
-
-    Turtle turtle;
-    turtle.set_step_size(0.5f);
-    for (int i = 0; i < 100; i++) {
-        turtle.turn(45.0f - i);
-        turtle.forward();
-    }
-
-    line.set_vertices(turtle.primitive_geometry());
 }
 GlApp::~GlApp() {}
 
@@ -74,6 +50,71 @@ void GlApp::on_viewport_change(int width, int height)
 
 void GlApp::render_frame()
 {
+    static vector<ColoredLine::Vertex> vertices{};
+
+    constexpr int max = 7;
+    static const string reset = "x";
+    static string seed = step(step(step(step(step(step(reset))))));
+    static int currentStep = 0;
+    static Countdown newTree;
+    static Countdown addStep;
+
+    static float angleTime = 0.0f;
+    static float frameAngle = 25.0f + 0.2 * sin(angleTime);
+    static Countdown angleTurn;
+
     glClear(GL_COLOR_BUFFER_BIT);
+
+    if (newTree.time_up()) {
+        newTree.reset(chrono::milliseconds{5000});
+
+        seed = step(reset);
+        currentStep = 1;
+    }
+
+    if (addStep.time_up()) {
+        addStep.reset(chrono::milliseconds{500});
+
+        currentStep += 1;
+        if (currentStep < max) {
+            seed = step(seed);
+        }
+    }
+
+    if (angleTurn.time_up()) {
+        angleTurn.reset(chrono::milliseconds{16});
+        angleTime += 0.01f;
+        frameAngle = 25.0f + 1.0f * sin(angleTime);
+    }
+
+    Turtle turtle{vertices, {0.0f, -8.0f}};
+    turtle.set_step_size(0.1f);
+    stack<Turtle> turtles{};
+    for (char c : seed) {
+        switch (c) {
+        case 'x':
+            break;
+        case 'f':
+            turtle.forward();
+            break;
+        case '+':
+            turtle.turn(frameAngle);
+            break;
+        case '-':
+            turtle.turn(-frameAngle);
+            break;
+        case '[':
+            turtles.push(turtle);
+            break;
+        case ']':
+            turtle = turtles.top();
+            turtles.pop();
+            break;
+        }
+    }
+
+    line.set_vertices(vertices);
     line.render(view.data());
+
+    vertices.clear();
 }
