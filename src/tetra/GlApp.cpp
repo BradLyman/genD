@@ -5,6 +5,7 @@
 #include "Countdown.hpp"
 #include "Mat4x4.hpp"
 #include "Turtle.hpp"
+#include "gl/DebugLog.hpp"
 
 #include <cmath>
 #include <iostream>
@@ -39,6 +40,8 @@ string step(const string& seed)
 GlApp::GlApp() : view{identity()}, line{}
 {
     glClearColor(0.15f, 0.15f, 0.15f, 1.0f);
+    glEnable(GL_DEBUG_OUTPUT);
+    glDebugMessageCallback(&reportGlError, nullptr);
 }
 GlApp::~GlApp() {}
 

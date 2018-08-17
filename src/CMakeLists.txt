@@ -5,6 +5,7 @@ target_sources(graph PUBLIC
     "${CMAKE_CURRENT_LIST_DIR}/tetra/Turtle.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/tetra/gl/Shader.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/tetra/gl/Program.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/tetra/gl/DebugLog.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/tetra/gl/VAO.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/tetra/gl/Buffer.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/tetra/sdl/SdlError.cpp"
