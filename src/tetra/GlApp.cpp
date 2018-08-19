@@ -36,7 +36,7 @@ layout (location=0) uniform sampler2D img;
 layout (location=1) uniform vec2 screen;
 layout (location=2) uniform int vert;
 
-uniform float fade = 0.99995f;
+uniform float fade = 0.999999f;
 uniform float weight[5] = float[](
     0.22702702702702704,
     0.1945945945945946,
@@ -128,8 +128,10 @@ void GlApp::render_frame()
             float oi = offset + i;
             float o1 = offset + i + 0.01f;
 
-            vertices.push_back({{cos(oi) * sin(oi * 9), sin(oi)}, color});
-            vertices.push_back({{cos(o1) * sin(o1 * 9), sin(o1)}, color});
+            vertices.push_back(
+                {{cos(oi * (float)fmod(drift, 3)), sin(oi)}, color});
+            vertices.push_back(
+                {{cos(o1 * (float)fmod(drift, 3)), sin(o1)}, color});
         }
         line.set_vertices(vertices);
 
