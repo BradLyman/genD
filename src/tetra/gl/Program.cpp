@@ -60,4 +60,9 @@ GLint Program::attribIndex(const string& attrib) const
     return glGetAttribLocation(handle(), attrib.c_str());
 }
 
+GLint Program::uniformLocation(const string& uniform) const
+{
+    return glGetUniformLocation(handle(), uniform.c_str());
+}
+
 Program::LinkError::LinkError(const string& msg) : runtime_error(msg) {}

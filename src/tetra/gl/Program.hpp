@@ -45,6 +45,16 @@ class Program
 
     GLint attribIndex(const std::string& attrib) const;
 
+    GLint uniformLocation(const std::string& uniform) const;
+
+    template<typename Fctn>
+    void while_bound(Fctn fctn)
+    {
+        glUseProgram(handle());
+        fctn();
+        glUseProgram(0);
+    }
+
   private:
     bool linkFailed();
     void throwLinkError();

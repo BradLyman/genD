@@ -27,7 +27,7 @@ void sdl_app_main();
 int main(int argc, char* argv[])
 {
     try {
-        if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
+        if (SDL_Init(SDL_INIT_VIDEO) < 0) {
             SdlError::throwIfFound();
         }
         sdl_app_main();
@@ -47,8 +47,8 @@ void sdl_app_main()
 {
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
-    SDL_GL_SetAttribute(
-        SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
+    // SDL_GL_SetAttribute(
+    //    SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
     SDL_GL_SetAttribute(
         SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
