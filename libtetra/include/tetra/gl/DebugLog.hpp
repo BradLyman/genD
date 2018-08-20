@@ -3,9 +3,7 @@
 
 namespace tetra
 {
-const char* severity_to_string(GLenum severity);
-
-void reportGlError(
+void report_gl_error(
     GLenum source,
     GLenum type,
     GLuint id,

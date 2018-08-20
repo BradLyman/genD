@@ -73,7 +73,7 @@ GlApp::GlApp() : view{identity()}, line{}, dims{1.0f, 1.0f}
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_TEXTURE_2D);
     glEnable(GL_DEBUG_OUTPUT);
-    glDebugMessageCallback(&reportGlError, nullptr);
+    glDebugMessageCallback(&tetra::report_gl_error, nullptr);
 
     surface[0].render([&]() { glClear(GL_COLOR_BUFFER_BIT); });
     surface[1].render([&]() { glClear(GL_COLOR_BUFFER_BIT); });
@@ -153,7 +153,7 @@ void GlApp::render_frame()
     }
 
     if (jumpTime.time_up()) {
-        jumpTime.reset(chrono::milliseconds{500});
+        jumpTime.reset(chrono::milliseconds{700});
         jump += 0.1f;
     }
 
@@ -164,7 +164,7 @@ void GlApp::render_frame()
         vector<ColoredLine::Vertex> vertices;
         for (float i = 0.0f; i < 3.0f; i += 0.5f) {
             float oi = offset + i;
-            float o1 = offset + i + 0.1;
+            float o1 = offset + i + 0.2;
 
             vertices.push_back(
                 {{cos(oi * (float)fmod(jump, 2)) * sin(1.2f * oi), sin(oi)},
