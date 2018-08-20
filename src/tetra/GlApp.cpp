@@ -71,7 +71,7 @@ void main() {
 
 GlApp::GlApp() : view{identity()}, line{}, dims{1.0f, 1.0f}
 {
-    glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_TEXTURE_2D);
@@ -96,7 +96,7 @@ void GlApp::on_viewport_change(int width, int height)
 {
     dims = {(float)width, (float)height};
     glViewport(0, 0, width, height);
-    view = ortho(width, height, 3.0f);
+    view = ortho(width, height, 2.3f);
     surface[0].resize(width, height);
     surface[1].resize(width, height);
 
@@ -104,19 +104,60 @@ void GlApp::on_viewport_change(int width, int height)
         [&]() { glUniform2f(1, dims.width, dims.height); });
 }
 
+namespace
+{
+std::array<float, 3> raw_rgb(float chroma, float hue_norm)
+{
+    const float x = chroma * (1.0f - abs(fmod(hue_norm, 2) - 1));
+
+    if (0 <= hue_norm && hue_norm < 1)
+        return {chroma, x, 0};
+    else if (1 <= hue_norm && hue_norm < 2)
+        return {x, chroma, 0};
+    else if (2 <= hue_norm && hue_norm < 3)
+        return {0, chroma, x};
+    else if (3 <= hue_norm && hue_norm < 4)
+        return {0, x, chroma};
+    else if (4 <= hue_norm && hue_norm < 5)
+        return {x, 0, chroma};
+    else
+        return {chroma, 0, x};
+}
+
+std::array<float, 3> hsl_to_rgb(std::array<float, 3> hsl)
+{
+    using std::abs;
+    using std::fmod;
+    const float chroma = (1.0f - abs(2.0f * hsl[2])) * hsl[1];
+    const float match = hsl[2] - (chroma / 2.0f);
+    const std::array<float, 3> rgb = raw_rgb(chroma, hsl[0] / 60.0f);
+    return {rgb[0] + match, rgb[1] + match, rgb[2] + match};
+}
+
+}; // namespace
+
 void GlApp::render_frame()
 {
     static array<float, 4> color = {0.5f, 0.5f, 1.0f, 1.0f};
     static Countdown newpoint;
-    static Countdown colorDrift;
     static float offset = 0.0f;
+
+    static Countdown colorDrift;
     static float drift = 0.0f;
+
+    static Countdown jumpTime;
+    static float jump = 0.0f;
 
     if (colorDrift.time_up()) {
         colorDrift.reset(chrono::milliseconds{500});
-        drift += 0.1f;
-        float a = sin(drift);
-        color = {a, 1.0f, 1.0f - a, 1.0f};
+        drift += 5.0f;
+        auto rgb = hsl_to_rgb({fmod(drift, 360.0f), 1.0f, 1.0f});
+        color = {rgb[0], rgb[1], rgb[2], 1.0f};
+    }
+
+    if (jumpTime.time_up()) {
+        jumpTime.reset(chrono::milliseconds{500});
+        jump += 0.1f;
     }
 
     if (newpoint.time_up()) {
@@ -124,14 +165,16 @@ void GlApp::render_frame()
         offset += 0.1;
 
         vector<ColoredLine::Vertex> vertices;
-        for (float i = 0.0f; i < 0.5f; i += 0.01f) {
+        for (float i = 0.0f; i < 3.0f; i += 0.5f) {
             float oi = offset + i;
-            float o1 = offset + i + 0.01f;
+            float o1 = offset + i + 0.1;
 
             vertices.push_back(
-                {{cos(oi * (float)fmod(drift, 3)), sin(oi)}, color});
+                {{cos(oi * (float)fmod(jump, 2)) * sin(1.2f * oi), sin(oi)},
+                 color});
             vertices.push_back(
-                {{cos(o1 * (float)fmod(drift, 3)), sin(o1)}, color});
+                {{cos(o1 * (float)fmod(jump, 2)) * sin(1.2f * o1), sin(o1)},
+                 color});
         }
         line.set_vertices(vertices);
 
