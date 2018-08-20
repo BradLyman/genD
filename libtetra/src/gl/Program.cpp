@@ -32,19 +32,19 @@ void Program::link()
     }
     glLinkProgram(handle());
     shaders.clear();
-    if (linkFailed()) {
-        throwLinkError();
+    if (link_failed()) {
+        throw_link_error();
     }
 }
 
-bool Program::linkFailed()
+bool Program::link_failed()
 {
     GLint status = GL_FALSE;
     glGetProgramiv(handle(), GL_LINK_STATUS, &status);
     return (status == GL_FALSE);
 }
 
-void Program::throwLinkError()
+void Program::throw_link_error()
 {
     GLint logLength = 0;
     glGetProgramiv(handle(), GL_INFO_LOG_LENGTH, &logLength);
@@ -55,12 +55,12 @@ void Program::throwLinkError()
     throw LinkError(string(buffer.get()));
 }
 
-GLint Program::attribIndex(const string& attrib) const
+GLint Program::attrib_index(const string& attrib) const
 {
     return glGetAttribLocation(handle(), attrib.c_str());
 }
 
-GLint Program::uniformLocation(const string& uniform) const
+GLint Program::uniform_location(const string& uniform) const
 {
     return glGetUniformLocation(handle(), uniform.c_str());
 }

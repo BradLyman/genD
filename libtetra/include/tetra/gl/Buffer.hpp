@@ -27,7 +27,7 @@ class Buffer
         DynamicCopy = GL_DYNAMIC_COPY
     };
 
-    enum class BufferTarget : GLenum {
+    enum class Target : GLenum {
         Array = GL_ARRAY_BUFFER,
         AtomicCounter = GL_ATOMIC_COUNTER_BUFFER,
         CopyRead = GL_COPY_READ_BUFFER,
@@ -80,7 +80,7 @@ class Buffer
      * target.
      */
     template<typename Action>
-    void while_bound(BufferTarget target, Action act)
+    void while_bound(Target target, Action act)
     {
         glBindBuffer(static_cast<GLenum>(target), handle());
         act();

@@ -42,10 +42,10 @@ ColoredLine::ColoredLine()
     view = glGetUniformLocation(program.handle(), "view");
 
     vao.whileBound([&]() {
-        glBindBuffer(GL_ARRAY_BUFFER, vertices.handle());
-        attribPointer(program.attribIndex("vVertex"), &Vertex::pos);
-        attribPointer(program.attribIndex("vColor"), &Vertex::color);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        vertices.while_bound(Buffer::Target::Array, [&]() {
+            attribPointer(program.attrib_index("vVertex"), &Vertex::pos);
+            attribPointer(program.attrib_index("vColor"), &Vertex::color);
+        });
     });
 }
 
@@ -58,9 +58,9 @@ void ColoredLine::set_vertices(const vector<Vertex>& vertexData)
 void ColoredLine::render(const float* viewMtx)
 {
     vao.whileBound([&]() {
-        glUseProgram(program.handle());
-        glUniformMatrix4fv(view, 1, GL_FALSE, viewMtx);
-        glDrawArrays(GL_LINES, 0, vertexCount);
-        glUseProgram(0);
+        program.while_bound([&]() {
+            glUniformMatrix4fv(view, 1, GL_FALSE, viewMtx);
+            glDrawArrays(GL_LINES, 0, vertexCount);
+        });
     });
 }

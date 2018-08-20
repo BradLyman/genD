@@ -27,26 +27,42 @@ class Program
     };
 
   public:
-    /** Create a new program */
+    /**
+     * Create a new program.
+     * The program is not safe to use until shaders have been attached and it's
+     * been linked.
+     * */
     Program();
     ~Program();
     Program(Program&& from);
     Program& operator=(Program&& from);
     Program(Program& from) = delete;
 
-    /** The raw OpenGL program handle. */
-    GLuint handle() const;
-
-    /** Attach the shader to this program for compiling/linking. */
+    /**
+     * Attach the shader to this program for compiling/linking.
+     **/
     Program& attach(Shader&& shader);
 
-    /** Link the shaders and throw any errors. */
+    /**
+     * Link the currently attached shaders and throw any errors.
+     **/
     void link();
 
-    GLint attribIndex(const std::string& attrib) const;
+    /**
+     * Get the attribute index for the attribute name.
+     * Returns -1 if the attribute cannot be found.
+     */
+    GLint attrib_index(const std::string& attrib) const;
 
-    GLint uniformLocation(const std::string& uniform) const;
+    /**
+     * Get the uniform location for the provided uniform name.
+     * Returns -1 if the location cannot be found.
+     */
+    GLint uniform_location(const std::string& uniform) const;
 
+    /**
+     * Take some action while the program is in use.
+     */
     template<typename Fctn>
     void while_bound(Fctn fctn)
     {
@@ -55,9 +71,14 @@ class Program
         glUseProgram(0);
     }
 
+    /**
+     * The raw OpenGL program handle.
+     **/
+    GLuint handle() const;
+
   private:
-    bool linkFailed();
-    void throwLinkError();
+    bool link_failed();
+    void throw_link_error();
 
   private:
     GLuint id;
