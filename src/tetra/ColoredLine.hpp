@@ -1,7 +1,7 @@
 #ifndef TETRA_COLORED_LINE_HPP
 #define TETRA_COLORED_LINE_HPP
 
-#include <glad/glad.h>
+#include <GL/glew.h>
 
 #include "gl/Buffer.hpp"
 #include "gl/Program.hpp"

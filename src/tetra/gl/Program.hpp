@@ -1,7 +1,7 @@
 #ifndef TETRA_GL_PROGRAM_HPP
 #define TETRA_GL_PROGRAM_HPP
 
-#include <glad/glad.h>
+#include <GL/glew.h>
 
 #include "Shader.hpp"
 

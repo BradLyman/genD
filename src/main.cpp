@@ -1,4 +1,4 @@
-#include <glad/glad.h>
+#include <GL/glew.h>
 
 #include "tetra/GlApp.hpp"
 #include "tetra/sdl/SdlError.hpp"
@@ -78,7 +78,9 @@ void sdl_app_main()
 /** use SDL to load opengl function pointers for the current context */
 void load_gl_functions()
 {
-    if (!gladLoadGLLoader(&SDL_GL_GetProcAddress)) {
-        throw std::runtime_error{"could not load opengl procs"};
+    auto result = glewInit();
+    if (result != GLEW_OK) {
+        string msg{reinterpret_cast<const char*>(glewGetErrorString(result))};
+        throw std::runtime_error{"could not load OpenGL functions: " + msg};
     }
 }

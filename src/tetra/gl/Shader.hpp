@@ -1,7 +1,7 @@
 #ifndef TETRA_GL_SHADER_HPP
 #define TETRA_GL_SHADER_HPP
 
-#include <glad/glad.h>
+#include <GL/glew.h>
 
 #include <stdexcept>
 #include <string>

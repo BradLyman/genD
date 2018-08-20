@@ -1,7 +1,7 @@
 #ifndef TETRA_GL_TEXTURE_HPP
 #define TETRA_GL_TEXTURE_HPP
 
-#include <glad/glad.h>
+#include <GL/glew.h>
 
 namespace tetra
 {

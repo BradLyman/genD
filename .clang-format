@@ -42,7 +42,9 @@ ForEachMacros:
   - BOOST_FOREACH
 IncludeBlocks:   Regroup
 IncludeCategories:
-  - Regex: '<(glad/)'
+  - Regex: '<(glew)'
+    Priority: -1
+  - Regex: '<(gl/glew)'
     Priority: -1
   - Regex: '"'
     Priority: 1

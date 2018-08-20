@@ -1,7 +1,7 @@
 #ifndef TETRA_GL_VAO_HPP
 #define TETRA_GL_VAO_HPP
 
-#include <glad/glad.h>
+#include <GL/glew.h>
 
 #include <array>
 

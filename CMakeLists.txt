@@ -2,17 +2,19 @@ cmake_minimum_required (VERSION 3.0.0)
 project (GRAPHS)
 
 find_package(SDL2 REQUIRED)
-find_library(UDEV_LIBS udev REQUIRED)
+find_package(GLEW REQUIRED)
+find_package(OpenGL REQUIRED)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_executable(graph src/main.cpp)
-target_include_directories(graph PUBLIC ./inc)
-target_include_directories(graph PUBLIC ${SDL2_INCLUDE_DIRS})
 target_link_libraries(graph PUBLIC
     ${SDL2_LIBRARIES}
-    ${UDEV_LIBS}
+    OpenGL::GL
+    GLEW::GLEW
 )
+target_include_directories(graph PUBLIC ${GLEW_INCLUDE_DIRS})
+target_include_directories(graph PUBLIC ${SDL2_INCLUDE_DIRS})
 target_compile_features(graph PUBLIC
     cxx_range_for
     cxx_auto_type
@@ -22,6 +24,5 @@ target_compile_features(graph PUBLIC
     cxx_uniform_initialization
 )
 
-include(./glad/CMakeLists.txt)
 include(./src/CMakeLists.txt)
 

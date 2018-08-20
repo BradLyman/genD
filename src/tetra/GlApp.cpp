@@ -1,5 +1,3 @@
-#include <glad/glad.h>
-
 #include "GlApp.hpp"
 
 #include "Countdown.hpp"

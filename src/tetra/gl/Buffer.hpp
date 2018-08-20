@@ -1,7 +1,7 @@
 #ifndef TETRA_GL_BUFFER_HPP
 #define TETRA_GL_BUFFER_HPP
 
-#include <glad/glad.h>
+#include <GL/glew.h>
 
 #include <vector>
 

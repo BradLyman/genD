@@ -1,7 +1,7 @@
 #ifndef TETRA_GL_FRAMEBUFFER_HPP
 #define TETRA_GL_FRAMEBUFFER_HPP
 
-#include <glad/glad.h>
+#include <GL/glew.h>
 
 namespace tetra
 {
