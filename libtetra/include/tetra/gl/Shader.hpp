@@ -38,11 +38,15 @@ class Shader
     Shader& operator=(Shader&& from);
     Shader(Shader& from) = delete;
 
-    GLuint handle() const;
-
-    /** Compile the shader source, throws a CompileError if there is an error.
+    /**
+     * Compile the shader source, throws a CompileError if there is an error.
      */
     void compile();
+
+    /**
+     * The raw OpenGL Shader id.
+     */
+    GLuint handle() const;
 
   private:
     void setSource();
