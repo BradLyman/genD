@@ -46,10 +46,12 @@ IncludeCategories:
     Priority: -1
   - Regex: '<(gl/glew)'
     Priority: -1
-  - Regex: '"'
+  - Regex: '<(tetra/)'
     Priority: 1
-  - Regex:           '.*'
-    Priority:        2
+  - Regex: '"'
+    Priority: 2
+  - Regex: '.*'
+    Priority: 3
 IncludeIsMainRegex: '(Test)?$'
 IndentCaseLabels: false
 IndentPPDirectives: None
