@@ -45,13 +45,17 @@ class Surface
     template<typename Fctn>
     void render(Fctn fctn)
     {
-        frame.whileBound(Framebuffer::Target::DRAW, [&]() {
+        frame.while_bound(Framebuffer::Target::DRAW, [&]() {
             glViewport(0, 0, dims.width, dims.height);
             fctn();
         });
     }
 
-    void blit_to_screen();
+    /**
+     * Raw framebuffer blit onto the default framebuffer.
+     * Assumes that the screen has the same dimensions as the texture.
+     */
+    void blit_to_screen() const;
 
     /**
      * The raw texture target for this surface.

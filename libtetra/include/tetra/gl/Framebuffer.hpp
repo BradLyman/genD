@@ -32,7 +32,7 @@ class Framebuffer
      * Take some action while the buffer is bound.
      */
     template<typename Fctn>
-    void whileBound(Target target, Fctn action)
+    void while_bound(Target target, Fctn action)
     {
         glBindFramebuffer(static_cast<GLenum>(target), id);
         action();

@@ -7,7 +7,7 @@ Surface::Surface(Surface::AllocateTexture alloc_fctn)
     : allocate_empty_texture{alloc_fctn}
 {
     allocate_empty_texture(1, 1, tex);
-    frame.whileBound(Framebuffer::Target::DRAW, [&]() {
+    frame.while_bound(Framebuffer::Target::DRAW, [&]() {
         glFramebufferTexture2D(
             GL_DRAW_FRAMEBUFFER,
             GL_COLOR_ATTACHMENT0,
@@ -24,7 +24,7 @@ void Surface::resize(int width, int height)
     allocate_empty_texture(dims.width, dims.height, tex);
 }
 
-void Surface::blit_to_screen()
+void Surface::blit_to_screen() const
 {
     glBlitNamedFramebuffer(
         frame.handle(),
