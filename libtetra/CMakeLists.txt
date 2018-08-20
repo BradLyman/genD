@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.5)
 project(libtetra VERSION 0.0.1 LANGUAGES CXX)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # Ensure Custom Targets are found
 list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake)
 
