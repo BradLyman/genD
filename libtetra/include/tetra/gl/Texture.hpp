@@ -37,7 +37,7 @@ class Texture
     GLuint handle() const;
 
     template<typename Fctn>
-    void whileBound(Target target, Fctn action)
+    void while_bound(Target target, Fctn action)
     {
         glBindTexture(static_cast<GLenum>(target), id);
         action();

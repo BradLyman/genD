@@ -1,5 +1,6 @@
+#include "GlApp.hpp"
+
 #include <tetra/Countdown.hpp>
-#include <tetra/GlApp.hpp>
 #include <tetra/Mat4x4.hpp>
 #include <tetra/Turtle.hpp>
 #include <tetra/gl/DebugLog.hpp>

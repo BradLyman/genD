@@ -1,9 +1,10 @@
 #include <GL/glew.h>
 
-#include <tetra/GlApp.hpp>
 #include <tetra/sdl/SdlError.hpp>
 #include <tetra/sdl/SdlEventPump.hpp>
 #include <tetra/sdl/Window.hpp>
+
+#include "GlApp.hpp"
 
 #include <SDL.h>
 #include <iostream>

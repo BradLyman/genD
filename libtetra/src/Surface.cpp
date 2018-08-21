@@ -45,7 +45,7 @@ Texture& Surface::raw_tex() { return tex; }
 
 void tetra::allocate_float_texture(int width, int height, Texture& tex)
 {
-    tex.whileBound(Texture::Target::Tex2d, [&]() {
+    tex.while_bound(Texture::Target::Tex2d, [&]() {
         glTexImage2D(
             GL_TEXTURE_2D,
             0,

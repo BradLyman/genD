@@ -35,7 +35,7 @@ class GlApp
     {
         surface[fade].render([&]() {
             glActiveTexture(GL_TEXTURE0);
-            surface[target].raw_tex().whileBound(Texture::Target::Tex2d, f);
+            surface[target].raw_tex().while_bound(Texture::Target::Tex2d, f);
         });
         std::swap(fade, target);
     }
