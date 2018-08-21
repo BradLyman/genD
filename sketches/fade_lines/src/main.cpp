@@ -29,7 +29,7 @@ int main(int argc, char* argv[])
 {
     try {
         if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-            SdlError::throwIfFound();
+            SdlError::throw_if_found();
         }
         sdl_app_main();
         SDL_Quit();

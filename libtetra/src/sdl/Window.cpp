@@ -8,7 +8,7 @@ Window::Window(SDL_Window* window)
     : window(window, &SDL_DestroyWindow), gl{SDL_GL_CreateContext(window)}
 {
     if (!window) {
-        SdlError::throwIfFound();
+        SdlError::throw_if_found();
     }
 }
 

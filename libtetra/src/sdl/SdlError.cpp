@@ -4,7 +4,7 @@ using tetra::SdlError;
 
 SdlError::SdlError(const std::string& msg) : std::runtime_error{msg} {}
 
-void SdlError::throwIfFound()
+void SdlError::throw_if_found()
 {
     const char* err = SDL_GetError();
     if (*err) {

@@ -17,7 +17,7 @@ class SdlError : public std::runtime_error
     /**
      * Throw an SdlError if SDL_GetError returns a non empty string.
      */
-    static void throwIfFound();
+    static void throw_if_found();
 };
 
 } // namespace tetra
