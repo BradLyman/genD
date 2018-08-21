@@ -12,5 +12,6 @@ target_link_libraries(fade_lines Tetra::libTetra)
 target_sources(fade_lines
     PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}/src/GlApp.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/src/PingPong.cpp
 )
 
