@@ -49,9 +49,9 @@ class Shader
     GLuint handle() const;
 
   private:
-    void setSource();
-    bool failedToCompile();
-    void throwCompileError();
+    void set_source();
+    bool failed_to_compile();
+    void throw_compile_error();
 
   private:
     GLuint id;

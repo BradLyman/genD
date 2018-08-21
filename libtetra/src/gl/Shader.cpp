@@ -28,27 +28,27 @@ Shader::~Shader() { glDeleteShader(id); }
 
 void Shader::compile()
 {
-    setSource();
+    set_source();
     glCompileShader(handle());
-    if (failedToCompile()) {
-        throwCompileError();
+    if (failed_to_compile()) {
+        throw_compile_error();
     }
 }
 
-void Shader::setSource()
+void Shader::set_source()
 {
     const GLchar* src = source.data();
     glShaderSource(handle(), 1, &src, nullptr);
 }
 
-bool Shader::failedToCompile()
+bool Shader::failed_to_compile()
 {
     GLint status = GL_FALSE;
     glGetShaderiv(handle(), GL_COMPILE_STATUS, &status);
     return !status;
 }
 
-void Shader::throwCompileError()
+void Shader::throw_compile_error()
 {
     GLint logSize = 0;
     glGetShaderiv(handle(), GL_INFO_LOG_LENGTH, &logSize);
