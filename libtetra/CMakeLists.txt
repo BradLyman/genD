@@ -11,6 +11,7 @@ list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake)
 find_package(SDL2 REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(OpenGL REQUIRED)
+find_package(glm REQUIRED)
 
 # --------------------------------------------------------------------------- #
 # Define target and properties
@@ -31,6 +32,7 @@ target_include_directories(libtetra
         $<INSTALL_INTERFACE:include>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         ${SDL2_INCLUDE_DIRS}
+        ${GLM_INCLUDE_DIRS}
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
@@ -47,6 +49,7 @@ target_sources(libtetra PRIVATE
     "${CMAKE_CURRENT_LIST_DIR}/src/ColoredLine.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/src/Turtle.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/src/Surface.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/src/Color.cpp"
 
     "${CMAKE_CURRENT_LIST_DIR}/src/gl/Shader.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/src/gl/Program.cpp"
@@ -125,3 +128,6 @@ export(
 # register the package in the user's package repository
 export(PACKAGE Tetra)
 
+# --------------------------------------------------------------------------- #
+# include tests
+add_subdirectory(tests)

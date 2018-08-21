@@ -1,5 +1,6 @@
 #include "GlApp.hpp"
 
+#include <tetra/Color.hpp>
 #include <tetra/Countdown.hpp>
 #include <tetra/Mat4x4.hpp>
 #include <tetra/Turtle.hpp>
@@ -34,7 +35,7 @@ const char* fragQuad = R"src(
     layout (location=1) uniform vec2 screen;
     layout (location=2) uniform int vert;
 
-    uniform float fade = 0.999999f;
+    uniform float fade = 0.99999f;
     uniform float weight[5] = float[](
         0.22702702702702704,
         0.1945945945945946,
@@ -97,38 +98,6 @@ void GlApp::on_viewport_change(int width, int height)
         [&]() { glUniform2f(1, (float)width, (float)height); });
 }
 
-namespace
-{
-std::array<float, 3> raw_rgb(float chroma, float hue_norm)
-{
-    const float x = chroma * (1.0f - abs(fmod(hue_norm, 2) - 1));
-
-    if (0 <= hue_norm && hue_norm < 1)
-        return {chroma, x, 0};
-    else if (1 <= hue_norm && hue_norm < 2)
-        return {x, chroma, 0};
-    else if (2 <= hue_norm && hue_norm < 3)
-        return {0, chroma, x};
-    else if (3 <= hue_norm && hue_norm < 4)
-        return {0, x, chroma};
-    else if (4 <= hue_norm && hue_norm < 5)
-        return {x, 0, chroma};
-    else
-        return {chroma, 0, x};
-}
-
-std::array<float, 3> hsl_to_rgb(std::array<float, 3> hsl)
-{
-    using std::abs;
-    using std::fmod;
-    const float chroma = (1.0f - abs(2.0f * hsl[2])) * hsl[1];
-    const float match = hsl[2] - (chroma / 2.0f);
-    const std::array<float, 3> rgb = raw_rgb(chroma, hsl[0] / 60.0f);
-    return {rgb[0] + match, rgb[1] + match, rgb[2] + match};
-}
-
-}; // namespace
-
 void GlApp::render_frame()
 {
     static array<float, 4> color = {0.5f, 0.5f, 1.0f, 1.0f};
@@ -144,8 +113,7 @@ void GlApp::render_frame()
     if (colorDrift.time_up()) {
         colorDrift.reset(chrono::milliseconds{500});
         drift += 5.0f;
-        auto rgb = hsl_to_rgb({fmod(drift, 360.0f), 1.0f, 1.0f});
-        color = {rgb[0], rgb[1], rgb[2], 1.0f};
+        color = HSL{fmod(drift, 360.0f), 0.85}.as_rgba();
     }
 
     if (jumpTime.time_up()) {
@@ -160,7 +128,7 @@ void GlApp::render_frame()
         vector<ColoredLine::Vertex> vertices;
         for (float i = 0.0f; i < 3.0f; i += 0.5f) {
             float oi = offset + i;
-            float o1 = offset + i + 0.2;
+            float o1 = offset + i + 0.5;
 
             vertices.push_back(
                 {{cos(oi * (float)fmod(jump, 2)) * sin(1.2f * oi), sin(oi)},
