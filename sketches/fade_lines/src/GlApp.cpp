@@ -206,11 +206,11 @@ FullScreenQuad::FullScreenQuad()
         array<float, 2> pos;
         array<float, 2> uv;
     };
-    vao.whileBound([&]() {
-        glBindBuffer(GL_ARRAY_BUFFER, quad.handle());
-        tetra::attribPointer(0, &QuadVert::pos);
-        tetra::attribPointer(1, &QuadVert::uv);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    vao.while_bound([&]() {
+        quad.while_bound(Buffer::Target::Array, [&]() {
+            tetra::set_attrib_pointer(0, &QuadVert::pos);
+            tetra::set_attrib_pointer(1, &QuadVert::uv);
+        });
     });
     quad.write<QuadVert>({
         {{-1.0f, -1.0f}, {0.0f, 0.0f}},
@@ -225,5 +225,5 @@ FullScreenQuad::FullScreenQuad()
 
 void FullScreenQuad::draw()
 {
-    vao.whileBound([]() { glDrawArrays(GL_TRIANGLES, 0, 6); });
+    vao.while_bound([]() { glDrawArrays(GL_TRIANGLES, 0, 6); });
 }

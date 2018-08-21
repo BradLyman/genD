@@ -20,7 +20,7 @@ class VAO
     GLuint handle() const;
 
     template<typename F>
-    void whileBound(F f)
+    void while_bound(F f)
     {
         glBindVertexArray(handle());
         f();
@@ -44,14 +44,14 @@ class VAO
  *      std::array<float, 4> color;
  *    };
  *
- *    vao.whileBound([&]() {
+ *    vao.while_bound([&]() {
  *        glBindBuffer(GL_ARRAY_BUFFER, myvertexbuffer);
- *        attribPointer(myPositionIndex, &Vertex::position);
- *        attribPointer(myColorIndex, &Vertex::position);
+ *        set_attrib_pointer(myPositionIndex, &Vertex::position);
+ *        set_attrib_pointer(myColorIndex, &Vertex::position);
  *    });
  */
 template<std::array<float, 1>::size_type length, typename T>
-void attribPointer(GLint index, std::array<float, length> T::*memberPtr)
+void set_attrib_pointer(GLint index, std::array<float, length> T::*memberPtr)
 {
     static_assert(
         std::is_pod<T>::value,
