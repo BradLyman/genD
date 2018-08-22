@@ -8,7 +8,7 @@ namespace tetra
 /**
  * Colors are things which can be represented as an rgba array of floats.
  */
-class Color
+class IColor
 {
   public:
     /**
@@ -21,7 +21,7 @@ class Color
  * Represents a color using the Hue-Saturation-Lightness model.
  * https://en.wikipedia.org/wiki/HSL_and_HSV#Converting_to_RGB
  */
-class HSL final : public Color
+class HSL final : public IColor
 {
   public:
     HSL(float h = 0.0f, float s = 1.0f, float l = 0.5f, float a = 1.0f);
