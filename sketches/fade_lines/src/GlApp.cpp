@@ -98,7 +98,7 @@ void GlApp::on_viewport_change(int width, int height)
         [&]() { glUniform2f(1, (float)width, (float)height); });
 }
 
-void GlApp::render_frame()
+void GlApp::on_frame_render()
 {
     static array<float, 4> color = {0.5f, 0.5f, 1.0f, 1.0f};
     static Countdown newpoint;

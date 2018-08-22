@@ -73,7 +73,7 @@ void sdl_app_main()
 
     GlApp myGlApp{};
     myGlApp.on_viewport_change(1920, 1080);
-    SDLEventPump<GlApp>(window, myGlApp).run_until_quit();
+    SDLEventPump(window, myGlApp).run_until_quit();
 }
 
 /** use SDL to load opengl function pointers for the current context */

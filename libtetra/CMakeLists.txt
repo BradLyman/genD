@@ -61,6 +61,7 @@ target_sources(libtetra PRIVATE
 
     "${CMAKE_CURRENT_LIST_DIR}/src/sdl/SdlError.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/src/sdl/Window.cpp"
+    "${CMAKE_CURRENT_LIST_DIR}/src/sdl/SdlEventPump.cpp"
 )
 
 # --------------------------------------------------------------------------- #

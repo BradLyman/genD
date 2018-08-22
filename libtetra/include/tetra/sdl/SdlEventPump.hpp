@@ -6,13 +6,34 @@
 namespace tetra
 {
 /**
- * Drive an SDL application with a single window.
- * Requires a template parameter Handler with the following methods:
- *
- * void render_frame();
- * void on_viewport_change(int width, int height);
+ * Objects which implement this interface can respond to SDL events.
  */
-template<class Handler>
+class IWindowEvents
+{
+  public:
+    /**
+     * Render a single frame for the current window.
+     * The back-buffer is automatically swapped once this method completes.
+     */
+    virtual void on_frame_render() = 0;
+
+    /**
+     * When the screen size changes this is invoked with the new width and
+     * height provided.
+     */
+    virtual void on_viewport_change(int width, int height);
+
+    /**
+     * Called when the mouse moves within the window.
+     * Parameters X and Y are integer pixel coordinates relative to the window
+     * width and height.
+     */
+    virtual void on_mouse_move(int x, int y);
+};
+
+/**
+ * Drive an SDL application with a single window.
+ */
 class SDLEventPump
 {
   public:
@@ -21,60 +42,22 @@ class SDLEventPump
      * The window and handler references are retained for the lifetime of
      * the SDLEventPump.
      */
-    SDLEventPump(Window& window, Handler& handler)
-        : window{window}, handler{handler}, running{true}
-    {
-    }
+    SDLEventPump(Window& window, IWindowEvents& handler);
 
     /**
      * Loop until an SDL_QUIT message is recieved.
      * Handle/Dispatch input, render frames, and swap the buffer.
      */
-    void run_until_quit()
-    {
-        while (running) {
-            handle_all_pending_events();
-            handler.render_frame();
-            window.swap_gl();
-        }
-    }
+    void run_until_quit();
 
   private:
-    void handle_all_pending_events()
-    {
-        SDL_Event e{};
-        while (SDL_PollEvent(&e)) {
-            handle_event(e);
-        }
-    }
-
-    void handle_event(const SDL_Event& event)
-    {
-        switch (event.type) {
-        case SDL_QUIT:
-            running = false;
-            break;
-        case SDL_WINDOWEVENT:
-            handle_window_event(event);
-            break;
-        }
-    }
-
-    void handle_window_event(const SDL_Event& event)
-    {
-        switch (event.window.event) {
-        case SDL_WINDOWEVENT_RESIZED:
-            handler.on_viewport_change(event.window.data1, event.window.data2);
-            break;
-        case SDL_WINDOWEVENT_SIZE_CHANGED:
-            handler.on_viewport_change(event.window.data1, event.window.data2);
-            break;
-        }
-    }
+    void handle_all_pending_events();
+    void handle_event(const SDL_Event& event);
+    void handle_window_event(const SDL_Event& event);
 
   private:
     bool running;
-    Handler& handler;
+    IWindowEvents& event_handler;
     Window& window;
 };
 } // namespace tetra

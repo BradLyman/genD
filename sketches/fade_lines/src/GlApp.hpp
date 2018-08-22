@@ -5,10 +5,11 @@
 #include <tetra/Surface.hpp>
 #include <tetra/gl/Framebuffer.hpp>
 #include <tetra/gl/Texture.hpp>
+#include <tetra/sdl/SdlEventPump.hpp>
 
 namespace tetra
 {
-class PingPong
+class PingPong final
 {
   public:
     PingPong();
@@ -70,15 +71,15 @@ class PingPong
     int back = 1;
 };
 
-class GlApp
+class GlApp final : public IWindowEvents
 {
   public:
     GlApp();
     ~GlApp();
 
-    void render_frame();
+    virtual void on_frame_render() override;
 
-    void on_viewport_change(int width, int height);
+    virtual void on_viewport_change(int width, int height) override;
 
   private:
     ColoredLine line;
