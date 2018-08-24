@@ -46,7 +46,7 @@ add_library(Tetra::libTetra STATIC IMPORTED)
 
 set_target_properties(Tetra::libTetra PROPERTIES
   INTERFACE_INCLUDE_DIRECTORIES "/home/brlyman/projcects/graphs/libtetra/include;/usr/include/SDL2;/usr/include"
-  INTERFACE_LINK_LIBRARIES "GLEW::GLEW;OpenGL::GL;-lSDL2"
+  INTERFACE_LINK_LIBRARIES "GLEW::GLEW;OpenGL::GL;-lSDL2;glm"
 )
 
 # Import target "Tetra::libTetra" for configuration ""

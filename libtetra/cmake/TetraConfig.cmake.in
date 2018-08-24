@@ -1,6 +1,7 @@
 find_package(SDL2 REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(OpenGL REQUIRED)
+find_package(glm REQUIRED)
 
 if(NOT TARGET Tetra::libTetra)
     get_filename_component(Tetra_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)

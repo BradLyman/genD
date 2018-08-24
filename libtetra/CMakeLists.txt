@@ -26,6 +26,7 @@ target_link_libraries(libtetra
         GLEW::GLEW
         OpenGL::GL
         ${SDL2_LIBRARIES}
+        glm
 )
 target_include_directories(libtetra
     PUBLIC
