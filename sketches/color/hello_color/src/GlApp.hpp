@@ -2,10 +2,13 @@
 #define TETRA_GLAPP_HPP
 
 #include <tetra/Color.hpp>
+#include <tetra/Ortho.hpp>
 #include <tetra/gl/Buffer.hpp>
 #include <tetra/gl/Program.hpp>
 #include <tetra/gl/VAO.hpp>
 #include <tetra/sdl/SdlEventPump.hpp>
+
+#include <glm/mat4x4.hpp>
 
 namespace tetra
 {
@@ -23,7 +26,7 @@ class ColoredQuads
     ColoredQuads(ColoredQuads&& from) = default;
 
     void set_quads(const std::vector<Quad>& quads);
-    void draw(const std::array<float, 16>& view_matrix);
+    void draw(const glm::mat4& view);
 
   private:
     int vertex_count;
@@ -53,13 +56,8 @@ class GlApp final : public IWindowEvents
     HSL clear_color;
     HSL rect_color;
     float rect_size;
-    std::array<float, 16> view;
     ColoredQuads colored_quads;
-
-    struct ScreenDims {
-        float width;
-        float height;
-    } dims;
+    Ortho ortho;
 };
 } // namespace tetra
 

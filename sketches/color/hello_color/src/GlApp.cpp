@@ -1,30 +1,16 @@
 #include "GlApp.hpp"
 
 #include <tetra/Color.hpp>
-#include <tetra/Countdown.hpp>
-#include <tetra/Mat4x4.hpp>
 #include <tetra/gl/DebugLog.hpp>
-
-#include <cmath>
-#include <iostream>
-#include <stack>
-#include <thread>
 
 using namespace tetra;
 using namespace std;
 
-namespace
+GlApp::GlApp() : ortho{720.0f}
 {
-constexpr float screen_height = 720.0f;
-};
+    auto rgba = HSL{0, 0.8f}.as_rgba();
+    glClearColor(rgba[0], rgba[1], rgba[2], rgba[3]);
 
-GlApp::GlApp()
-    : view{identity()}
-    , clear_color{0, 0.5f}
-    , rect_color{60, 0.5f}
-    , dims{1.0f, 1.0f}
-{
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glEnable(GL_DEBUG_OUTPUT);
     glDebugMessageCallback(&tetra::report_gl_error, nullptr);
 }
@@ -33,38 +19,31 @@ GlApp::~GlApp() {}
 void GlApp::on_viewport_change(int width, int height)
 {
     glViewport(0, 0, width, height);
-    view = ortho(width, height, screen_height);
-    dims = {(float)width, (float)height};
+    ortho.resize_window(width, height);
 }
 
 void GlApp::on_mouse_move(int x, int y)
 {
-    float norm_y = y * (screen_height / dims.height);
-    float scaled_width = screen_height * (dims.width / dims.height);
-    float norm_x = x * (scaled_width / dims.width);
+    const auto norm = glm::abs(ortho.world_coords({x, y}));
 
-    rect_size = norm_x / 2.0f;
-    clear_color = HSL{norm_y / 2.0f};
-    rect_color = HSL{fmod((norm_y / 2.0f) + 90.0f, 360.0f)};
+    auto clear = HSL{norm.y, 0.8f}.as_rgba();
+    glClearColor(clear[0], clear[1], clear[2], clear[3]);
 
-    auto rgba = clear_color.as_rgba();
-    glClearColor(rgba[0], rgba[1], rgba[2], rgba[3]);
+    colored_quads.set_quads({
+        {
+            -norm.x,
+            norm.x,
+            -norm.y,
+            norm.y,
+            HSL{fmod(norm.y + 90.0f, 360.0f), 0.8f}.as_rgba(),
+        },
+    });
 }
 
 void GlApp::on_frame_render()
 {
     glClear(GL_COLOR_BUFFER_BIT);
-
-    colored_quads.set_quads({
-        {
-            -rect_size / 2,
-            rect_size / 2,
-            -rect_size / 2,
-            rect_size / 2,
-            rect_color.as_rgba(),
-        },
-    });
-    colored_quads.draw(view);
+    colored_quads.draw(ortho.projection());
 }
 
 namespace
@@ -129,11 +108,11 @@ void ColoredQuads::set_quads(const std::vector<Quad>& quads)
     vertex_count = vertices.size();
 }
 
-void ColoredQuads::draw(const std::array<float, 16>& view)
+void ColoredQuads::draw(const glm::mat4& view)
 {
     vao.while_bound([&]() {
         flat_color.while_bound([&]() {
-            glUniformMatrix4fv(0, 1, GL_FALSE, view.data());
+            glUniformMatrix4fv(0, 1, GL_FALSE, &view[0][0]);
             glDrawArrays(GL_TRIANGLES, 0, vertex_count);
         });
     });
