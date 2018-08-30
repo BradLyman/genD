@@ -12,33 +12,28 @@
 
 namespace tetra
 {
-class ColoredQuads
+class Triangles
 {
   public:
-    struct Quad {
-        float left, right, bottom, top;
-        std::array<float, 4> rgba_color;
-    };
-
-  public:
-    ColoredQuads();
-    ColoredQuads(const ColoredQuads& from) = delete;
-    ColoredQuads(ColoredQuads&& from) = default;
-
-    void set_quads(const std::vector<Quad>& quads);
-    void draw(const glm::mat4& view);
-
-  private:
-    int vertex_count;
-    VAO vao;
-    Buffer buffer;
-    Program flat_color;
-
-  private:
     struct Vertex {
         std::array<float, 2> pos;
         std::array<float, 4> color;
     };
+
+  public:
+    Triangles();
+
+    void set_view_transform(const glm::mat4& view);
+
+    void set_vertices(const std::vector<Vertex>& vertices);
+
+    void draw();
+
+  private:
+    VAO vao;
+    Buffer buffer;
+    int vertex_count;
+    Program flat_color;
 };
 
 class GlApp final : public IWindowEvents
@@ -53,11 +48,8 @@ class GlApp final : public IWindowEvents
     virtual void on_mouse_move(int x, int y) override;
 
   private:
-    HSL clear_color;
-    HSL rect_color;
-    float rect_size;
-    ColoredQuads colored_quads;
     Ortho ortho;
+    Triangles triangles;
 };
 } // namespace tetra
 

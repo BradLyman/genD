@@ -3,8 +3,28 @@
 #include <tetra/Color.hpp>
 #include <tetra/gl/DebugLog.hpp>
 
+#include <iostream>
+
 using namespace tetra;
 using namespace std;
+
+struct CenteredQuad {
+    float half_width, half_height;
+
+    vector<Triangles::Vertex> triangulate(IColor& color) const
+    {
+        vector<Triangles::Vertex> vertices{};
+        vertices.reserve(6);
+        vertices.push_back({{-half_width, -half_height}, color.as_rgba()});
+        vertices.push_back({{half_width, -half_height}, color.as_rgba()});
+        vertices.push_back({{-half_width, half_height}, color.as_rgba()});
+
+        vertices.push_back({{-half_width, half_height}, color.as_rgba()});
+        vertices.push_back({{half_width, -half_height}, color.as_rgba()});
+        vertices.push_back({{half_width, half_height}, color.as_rgba()});
+        return vertices;
+    }
+};
 
 GlApp::GlApp() : ortho{720.0f}
 {
@@ -20,30 +40,25 @@ void GlApp::on_viewport_change(int width, int height)
 {
     glViewport(0, 0, width, height);
     ortho.resize_window(width, height);
+    triangles.set_view_transform(ortho.projection());
 }
 
 void GlApp::on_mouse_move(int x, int y)
 {
     const auto norm = glm::abs(ortho.world_coords({x, y}));
 
-    auto clear = HSL{norm.y, 0.8f}.as_rgba();
-    glClearColor(clear[0], clear[1], clear[2], clear[3]);
+    auto background = HSL{norm.y, 0.8f}.as_rgba();
+    glClearColor(background[0], background[1], background[2], background[3]);
 
-    colored_quads.set_quads({
-        {
-            -norm.x,
-            norm.x,
-            -norm.y,
-            norm.y,
-            HSL{fmod(norm.y + 90.0f, 360.0f), 0.8f}.as_rgba(),
-        },
-    });
+    auto foreground = HSL{fmod(norm.y + 90.0f, 360.0f), 0.8f};
+    triangles.set_vertices(
+        CenteredQuad{norm.x, norm.y}.triangulate(foreground));
 }
 
 void GlApp::on_frame_render()
 {
     glClear(GL_COLOR_BUFFER_BIT);
-    colored_quads.draw(ortho.projection());
+    triangles.draw();
 }
 
 namespace
@@ -77,7 +92,7 @@ const char* fragment = R"src(
 )src";
 }; // namespace
 
-ColoredQuads::ColoredQuads() : vertex_count{0}
+Triangles::Triangles() : vertex_count{0}
 {
     flat_color.attach(Shader(vertex, Shader::Type::Vertex));
     flat_color.attach(Shader(fragment, Shader::Type::Fragment));
@@ -85,35 +100,27 @@ ColoredQuads::ColoredQuads() : vertex_count{0}
 
     vao.while_bound([&]() {
         buffer.while_bound(Buffer::Target::Array, []() {
-            set_attrib_pointer(0, &Vertex::pos);
-            set_attrib_pointer(1, &Vertex::color);
+            set_attrib_pointer(0, &Triangles::Vertex::pos);
+            set_attrib_pointer(1, &Triangles::Vertex::color);
         });
     });
 }
 
-void ColoredQuads::set_quads(const std::vector<Quad>& quads)
+void Triangles::set_view_transform(const glm::mat4& view)
 {
-    std::vector<Vertex> vertices;
-    vertices.reserve(quads.size() * 6);
-    for (const Quad& quad : quads) {
-        vertices.push_back({{quad.left, quad.bottom}, quad.rgba_color});
-        vertices.push_back({{quad.right, quad.bottom}, quad.rgba_color});
-        vertices.push_back({{quad.left, quad.top}, quad.rgba_color});
+    flat_color.while_bound(
+        [&]() { glUniformMatrix4fv(0, 1, GL_FALSE, &view[0][0]); });
+}
 
-        vertices.push_back({{quad.left, quad.top}, quad.rgba_color});
-        vertices.push_back({{quad.right, quad.bottom}, quad.rgba_color});
-        vertices.push_back({{quad.right, quad.top}, quad.rgba_color});
-    }
+void Triangles::set_vertices(const std::vector<Vertex>& vertices)
+{
     buffer.write(vertices);
     vertex_count = vertices.size();
 }
 
-void ColoredQuads::draw(const glm::mat4& view)
+void Triangles::draw()
 {
-    vao.while_bound([&]() {
-        flat_color.while_bound([&]() {
-            glUniformMatrix4fv(0, 1, GL_FALSE, &view[0][0]);
-            glDrawArrays(GL_TRIANGLES, 0, vertex_count);
-        });
+    flat_color.while_bound([&]() {
+        vao.while_bound([&]() { glDrawArrays(GL_TRIANGLES, 0, vertex_count); });
     });
 }
