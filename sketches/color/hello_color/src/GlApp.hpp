@@ -2,11 +2,11 @@
 #define TETRA_GLAPP_HPP
 
 #include <tetra/Color.hpp>
-#include <tetra/Ortho.hpp>
 #include <tetra/gl/Buffer.hpp>
 #include <tetra/gl/Program.hpp>
 #include <tetra/gl/VAO.hpp>
 #include <tetra/sdl/SdlEventPump.hpp>
+#include <tetra/transforms/AutoAspectOrtho.hpp>
 
 #include <glm/mat4x4.hpp>
 
@@ -48,7 +48,7 @@ class GlApp final : public IWindowEvents
     virtual void on_mouse_move(int x, int y) override;
 
   private:
-    Ortho ortho;
+    transforms::AutoAspectOrtho ortho;
     Triangles triangles;
 };
 } // namespace tetra
