@@ -44,10 +44,9 @@ glm::vec2 FixedOrtho::world_coords(const glm::vec2& viewport_coords) const
         normalized.x - 0.5f,
         0.5f - normalized.y,
     };
-    const vec2 scaled = centered * 2.0f;
     return {
-        scaled.x * world.width,
-        scaled.y * world.height,
+        centered.x * world.width,
+        centered.y * world.height,
     };
 }
 
