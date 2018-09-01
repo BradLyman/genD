@@ -51,7 +51,6 @@ target_sources(libtetra PRIVATE
     "${CMAKE_CURRENT_LIST_DIR}/src/Turtle.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/src/Surface.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/src/Color.cpp"
-    "${CMAKE_CURRENT_LIST_DIR}/src/Ortho.cpp"
 
     "${CMAKE_CURRENT_LIST_DIR}/src/transforms/FixedOrtho.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/src/transforms/AutoAspectOrtho.cpp"
