@@ -83,7 +83,7 @@ GlApp::~GlApp() {}
 void GlApp::on_viewport_change(int width, int height)
 {
     glViewport(0, 0, width, height);
-    ortho.viewport_resize(width, height);
+    ortho.resize_viewport(width, height);
 }
 
 void GlApp::on_mouse_move(int x, int y) {}

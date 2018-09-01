@@ -20,7 +20,7 @@ FixedOrtho::FixedOrtho(float width, float height)
 {
 }
 
-void FixedOrtho::viewport_resize(float width, float height)
+void FixedOrtho::resize_viewport(float width, float height)
 {
     viewport = {width, height};
 }

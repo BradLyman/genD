@@ -18,7 +18,7 @@ class FixedOrtho
     /**
      * Resize the viewport.
      */
-    void viewport_resize(float width, float height);
+    void resize_viewport(float width, float height);
 
     /**
      * Resize the world-space.

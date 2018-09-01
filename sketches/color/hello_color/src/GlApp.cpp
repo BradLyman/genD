@@ -39,7 +39,7 @@ GlApp::~GlApp() {}
 void GlApp::on_viewport_change(int width, int height)
 {
     glViewport(0, 0, width, height);
-    ortho.viewport_resize(width, height);
+    ortho.resize_viewport(width, height);
     triangles.set_view_transform(ortho.projection());
 }
 

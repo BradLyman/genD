@@ -11,10 +11,10 @@ AutoAspectOrtho::AutoAspectOrtho(float size)
 {
 }
 
-void AutoAspectOrtho::viewport_resize(float width, float height)
+void AutoAspectOrtho::resize_viewport(float width, float height)
 {
     aspect = width / height;
-    ortho.viewport_resize(width, height);
+    ortho.resize_viewport(width, height);
     ortho.resize_world(world_size * aspect, world_size);
 }
 
