@@ -55,6 +55,8 @@ target_sources(libtetra PRIVATE
     "${CMAKE_CURRENT_LIST_DIR}/src/transforms/FixedOrtho.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/src/transforms/AutoAspectOrtho.cpp"
 
+    "${CMAKE_CURRENT_LIST_DIR}/src/primitives/Triangles.cpp"
+
     "${CMAKE_CURRENT_LIST_DIR}/src/gl/Shader.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/src/gl/Program.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/src/gl/Texture.cpp"

@@ -13,7 +13,6 @@
 #include <thread>
 
 using namespace std;
-using tetra::GlApp;
 using tetra::SdlError;
 using tetra::SDLEventPump;
 using tetra::Window;
