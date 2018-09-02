@@ -32,9 +32,32 @@ class HSL final : public IColor
      */
     virtual std::array<float, 4> as_rgba() override;
 
+    /**
+     * Mix two hsl colors with the function x*(1.0f-v) + y*v.
+     */
+    static HSL mix(const HSL& x, const HSL& y, float v);
+
   private:
     float h, s, l, a;
 };
+
+/**
+ * Represents an RGBA color.
+ */
+class RGBA : public IColor
+{
+  public:
+    RGBA(float i, float a);
+    RGBA(float r, float g, float b, float a);
+
+    virtual std::array<float, 4> as_rgba() noexcept override;
+
+    static RGBA mix(const RGBA& left, const RGBA& right, float v);
+
+  private:
+    float r, g, b, a;
+};
+
 } // namespace tetra
 
 #endif
