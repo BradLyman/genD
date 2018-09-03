@@ -9,3 +9,9 @@ CMakeFiles/
 *.swp
 *.a
 *.out
+
+/target
+**/*.rs.bk
+target/
+
+*.lock
