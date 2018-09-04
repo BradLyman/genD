@@ -3,53 +3,9 @@ extern crate gl;
 extern crate sdl2;
 
 use gen_d::app_failure::AppFailure;
-use gen_d::core_gl;
-use gen_d::core_gl::Object;
-use gen_d::{drive_gl_app, GlApp};
+use gen_d::drive_gl_app;
 
-#[derive(Copy, Clone)]
-#[repr(C)]
-struct Vertex {
-    pos: [f32; 2],
-}
-
-struct MyApp {
-    vert_buffer: core_gl::Buffer,
-}
-
-impl MyApp {
-    fn build() -> MyApp {
-        MyApp {
-            vert_buffer: core_gl::Buffer::new(),
-        }
-    }
-}
-
-impl GlApp for MyApp {
-    fn setup(&mut self) -> Result<(), AppFailure> {
-        unsafe {
-            gl::ClearColor(0.0, 0.0, 0.0, 1.0);
-        }
-
-        self.vert_buffer
-            .set_debug_name("MyVertBuffer".to_string())?;
-
-        self.vert_buffer.write(&mut vec![
-            Vertex { pos: [0.0, 0.0] },
-            Vertex { pos: [0.5, 0.0] },
-            Vertex { pos: [0.0, 0.5] },
-        ]);
-        Ok(())
-    }
-
-    fn render_frame(&mut self) -> Result<(), AppFailure> {
-        // no-op
-        unsafe {
-            gl::Clear(gl::COLOR_BUFFER_BIT);
-        }
-        return Ok(());
-    }
-}
+mod app;
 
 fn main() -> Result<(), AppFailure> {
     let sdl = sdl2::init()?;
@@ -70,7 +26,7 @@ fn main() -> Result<(), AppFailure> {
         gl::DebugMessageCallback(gen_d::gl_debug_to_stdout, 0 as _);
     }
 
-    drive_gl_app(sdl.event_pump()?, &window, &mut MyApp::build())?;
+    drive_gl_app(sdl.event_pump()?, &window, &mut app::MyApp::build())?;
 
     return Ok(());
 }
