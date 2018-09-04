@@ -1,4 +1,5 @@
 use sdl2;
+use std;
 
 use std::error::Error;
 
@@ -17,6 +18,14 @@ impl From<sdl2::video::WindowBuildError> for AppFailure {
     fn from(err: sdl2::video::WindowBuildError) -> AppFailure {
         AppFailure {
             message: err.description().to_string(),
+        }
+    }
+}
+
+impl From<std::ffi::NulError> for AppFailure {
+    fn from(err: std::ffi::NulError) -> AppFailure {
+        AppFailure {
+            message: "ffi NulError: ".to_owned() + err.description(),
         }
     }
 }
