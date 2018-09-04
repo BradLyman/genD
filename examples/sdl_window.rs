@@ -24,6 +24,15 @@ impl GlApp for MyApp {
         }
         return Ok(());
     }
+
+    fn on_viewport_resize(
+        &mut self,
+        width: i32,
+        height: i32,
+    ) -> Result<(), AppFailure> {
+        println!("resized {:?}, {:?}", width, height);
+        Ok(())
+    }
 }
 
 fn main() -> Result<(), AppFailure> {
