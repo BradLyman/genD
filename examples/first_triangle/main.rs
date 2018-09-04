@@ -3,17 +3,42 @@ extern crate gl;
 extern crate sdl2;
 
 use gen_d::app_failure::AppFailure;
+use gen_d::core_gl;
+use gen_d::core_gl::Object;
 use gen_d::{drive_gl_app, GlApp};
 
-struct MyApp {}
+#[derive(Copy, Clone)]
+#[repr(C)]
+struct Vertex {
+    pos: [f32; 2],
+}
+
+struct MyApp {
+    vert_buffer: core_gl::Buffer,
+}
+
+impl MyApp {
+    fn build() -> MyApp {
+        MyApp {
+            vert_buffer: core_gl::Buffer::new(),
+        }
+    }
+}
 
 impl GlApp for MyApp {
     fn setup(&mut self) -> Result<(), AppFailure> {
         unsafe {
-            gl::Enable(gl::DEBUG_OUTPUT);
-            gl::ClearColor(1.0, 1.0, 1.0, 1.0);
-            gl::DebugMessageCallback(gen_d::gl_debug_to_stdout, 0 as _);
+            gl::ClearColor(0.0, 0.0, 0.0, 1.0);
         }
+
+        self.vert_buffer
+            .set_debug_name("MyVertBuffer".to_string())?;
+
+        self.vert_buffer.write(&mut vec![
+            Vertex { pos: [0.0, 0.0] },
+            Vertex { pos: [0.5, 0.0] },
+            Vertex { pos: [0.0, 0.5] },
+        ]);
         Ok(())
     }
 
@@ -40,7 +65,12 @@ fn main() -> Result<(), AppFailure> {
     window.gl_make_current(&context)?;
     gl::load_with(|s| video.gl_get_proc_address(s) as _);
 
-    drive_gl_app(sdl.event_pump()?, &window, &mut MyApp {})?;
+    unsafe {
+        gl::Enable(gl::DEBUG_OUTPUT);
+        gl::DebugMessageCallback(gen_d::gl_debug_to_stdout, 0 as _);
+    }
+
+    drive_gl_app(sdl.event_pump()?, &window, &mut MyApp::build())?;
 
     return Ok(());
 }

@@ -2,6 +2,7 @@ extern crate gl;
 extern crate sdl2;
 
 pub mod app_failure;
+pub mod core_gl;
 mod gl_app;
 mod gl_debug;
 
