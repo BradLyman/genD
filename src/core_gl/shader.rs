@@ -119,7 +119,7 @@ impl core_gl::Object for Shader {
         self.id
     }
 
-    /// Set the buffer's name as used in gl debug messages.
+    /// Set the shader's name as used in gl debug messages.
     fn set_debug_name(
         &mut self,
         name: String,
