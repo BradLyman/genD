@@ -1,11 +1,9 @@
-use app_failure::AppFailure;
 use gl;
 use std;
-use std::ffi::CString;
-
-use gl::types::{GLsizeiptr, GLuint, GLvoid};
 
 pub mod buffer;
+pub mod shader;
+pub mod vao;
 
 pub trait Object: Drop {
     fn raw(&self) -> gl::types::GLuint;

@@ -33,7 +33,7 @@ pub fn drive_gl_app<T: GlApp>(
 ) -> Result<(), AppFailure> {
     app.setup()?;
     let mut running = true;
-    while (running) {
+    while running {
         running = handle_events(app, &mut event_pump)?;
         app.render_frame()?;
         window.gl_swap_window();

@@ -29,3 +29,11 @@ impl From<std::ffi::NulError> for AppFailure {
         }
     }
 }
+
+impl From<std::string::FromUtf8Error> for AppFailure {
+    fn from(err: std::string::FromUtf8Error) -> AppFailure {
+        AppFailure {
+            message: format!("Failed to convert Utf8: {}", err),
+        }
+    }
+}

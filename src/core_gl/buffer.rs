@@ -27,6 +27,24 @@ pub enum Usage {
     DynamicCopy,
 }
 
+/// Buffer bind targets
+pub enum Target {
+    Array,
+    AtomicCounter,
+    CopyRead,
+    CopyWrite,
+    DispatchIndirect,
+    DrawIndirect,
+    ElementArray,
+    PixelPack,
+    PixelUnpack,
+    Query,
+    ShaderStorage,
+    TextureBuffer,
+    TransformFeedback,
+    Uniform,
+}
+
 impl Buffer {
     ///
     /// Create a new buffer with no data.
@@ -38,6 +56,20 @@ impl Buffer {
             temp_id
         };
         Buffer { id: id, size: 0 }
+    }
+
+    ///
+    /// Take some action while the buffer is bound to the specified target.
+    ///
+    pub fn while_bound<Func: FnMut() -> ()>(
+        &mut self,
+        target: Target,
+        mut func: Func,
+    ) {
+        let raw_target = target_as_enum(target);
+        unsafe { gl::BindBuffer(raw_target, self.id) };
+        func();
+        unsafe { gl::BindBuffer(raw_target, 0) };
     }
 
     ///
@@ -129,5 +161,24 @@ fn usage_as_enum(usage: Usage) -> GLenum {
         Usage::StreamCopy => gl::STREAM_COPY,
         Usage::StreamDraw => gl::STREAM_DRAW,
         Usage::StreamRead => gl::STREAM_READ,
+    }
+}
+
+fn target_as_enum(target: Target) -> GLenum {
+    match target {
+        Target::Array => gl::ARRAY_BUFFER,
+        Target::AtomicCounter => gl::ATOMIC_COUNTER_BUFFER,
+        Target::CopyRead => gl::COPY_READ_BUFFER,
+        Target::CopyWrite => gl::COPY_WRITE_BUFFER,
+        Target::DispatchIndirect => gl::DISPATCH_INDIRECT_BUFFER,
+        Target::DrawIndirect => gl::DRAW_INDIRECT_BUFFER,
+        Target::ElementArray => gl::ELEMENT_ARRAY_BUFFER,
+        Target::PixelPack => gl::PIXEL_PACK_BUFFER,
+        Target::PixelUnpack => gl::PIXEL_UNPACK_BUFFER,
+        Target::Query => gl::QUERY_BUFFER,
+        Target::ShaderStorage => gl::SHADER_STORAGE_BUFFER,
+        Target::TextureBuffer => gl::TEXTURE_BUFFER,
+        Target::TransformFeedback => gl::TRANSFORM_FEEDBACK_BUFFER,
+        Target::Uniform => gl::UNIFORM_BUFFER,
     }
 }
