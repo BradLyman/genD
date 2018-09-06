@@ -66,7 +66,7 @@ impl GlApp for MyApp {
 
         self.vert_buffer.write(
             Usage::StaticDraw,
-            &mut vec![
+            &vec![
                 Vertex {
                     pos: [0.0, 0.0],
                     color: [1.0, 1.0, 1.0, 1.0],
