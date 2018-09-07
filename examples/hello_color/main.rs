@@ -16,6 +16,7 @@ fn main() -> Result<(), AppFailure> {
         sdl2::video::WindowBuilder::new(&video, "float-me", 1920, 1080)
             .resizable()
             .opengl()
+            .input_grabbed()
             .build()?;
     let context = window.gl_create_context()?;
     window.gl_make_current(&context)?;
