@@ -22,11 +22,14 @@ impl Program {
         }
     }
 
+    /// Attach a shader to this program.
     pub fn attach(&mut self, shader: Shader) -> &mut Program {
         self.shaders.push(shader);
         self
     }
 
+    /// Link the attached shaders into a usable program.
+    /// Any compile or link failures are reported as an Err.
     pub fn link(&mut self) -> Result<(), AppFailure> {
         self.compile_and_attach_shaders()?;
         unsafe { gl::LinkProgram(self.id) };
@@ -35,6 +38,13 @@ impl Program {
         } else {
             Ok(())
         }
+    }
+
+    /// Take some action while the program is active.
+    pub fn while_bound<Func: FnMut() -> ()>(&mut self, mut func: Func) {
+        unsafe { gl::UseProgram(self.id) };
+        func();
+        unsafe { gl::UseProgram(0) };
     }
 
     /// Compile each shader and attach it to the underlying OpenGL Program

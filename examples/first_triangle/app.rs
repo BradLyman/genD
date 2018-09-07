@@ -95,12 +95,13 @@ impl GlApp for MyApp {
     }
 
     fn render_frame(&mut self) -> Result<(), AppFailure> {
-        unsafe {
-            gl::Clear(gl::COLOR_BUFFER_BIT);
-            gl::UseProgram(self.program.raw());
-        };
-        self.vao.while_bound(|| unsafe {
-            gl::DrawArrays(gl::TRIANGLES, 0, 3);
+        unsafe { gl::Clear(gl::COLOR_BUFFER_BIT) };
+
+        let prog = &mut self.program;
+        self.vao.while_bound(|| {
+            prog.while_bound(|| unsafe {
+                gl::DrawArrays(gl::TRIANGLES, 0, 3);
+            });
         });
         return Ok(());
     }
