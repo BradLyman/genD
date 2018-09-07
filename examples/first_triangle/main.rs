@@ -1,3 +1,4 @@
+#[macro_use]
 extern crate gen_d;
 extern crate gl;
 extern crate sdl2;

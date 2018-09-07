@@ -4,6 +4,7 @@ use std;
 pub mod buffer;
 pub mod program;
 pub mod shader;
+
 pub mod vao;
 
 pub trait Object: Drop {

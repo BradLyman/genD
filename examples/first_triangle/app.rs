@@ -32,7 +32,7 @@ const FRAG_SRC: &'static str = r###"
 "###;
 
 pub struct MyApp {
-    vert_buffer: Buffer,
+    buffer: Buffer,
     vao: VAO,
     program: Program,
 }
@@ -40,7 +40,7 @@ pub struct MyApp {
 impl MyApp {
     pub fn build() -> MyApp {
         MyApp {
-            vert_buffer: Buffer::new(),
+            buffer: Buffer::new(),
             vao: VAO::new(),
             program: Program::new(),
         }
@@ -56,54 +56,34 @@ struct Vertex {
 
 impl GlApp for MyApp {
     fn setup(&mut self) -> Result<(), AppFailure> {
-        unsafe {
-            gl::ClearColor(0.0, 0.0, 0.0, 1.0);
-        }
-        self.vert_buffer
-            .set_debug_name("MyVertBuffer".to_string())?;
+        unsafe { gl::ClearColor(0.0, 0.0, 0.0, 1.0) };
+
+        self.buffer.set_debug_name("MyVertBuffer".to_string())?;
         self.vao.set_debug_name("MyVAO".to_string())?;
         self.program.set_debug_name("MyProgram".to_string())?;
 
-        self.vert_buffer.write(
+        self.buffer.write(
             Usage::StaticDraw,
             &vec![
                 Vertex {
-                    pos: [0.0, 0.0],
-                    color: [1.0, 1.0, 1.0, 1.0],
+                    pos: [-0.5, -0.5],
+                    color: [1.0, 0.0, 0.0, 1.0],
                 },
                 Vertex {
-                    pos: [0.5, 0.0],
-                    color: [0.5, 0.0, 0.0, 1.0],
+                    pos: [0.5, -0.5],
+                    color: [0.0, 1.0, 0.0, 1.0],
                 },
                 Vertex {
                     pos: [0.0, 0.5],
-                    color: [0.0, 0.3, 0.8, 1.0],
+                    color: [0.0, 0.0, 1.0, 1.0],
                 },
             ],
         );
-        let vert_buffer = &mut self.vert_buffer;
-        self.vao.while_bound(|| {
-            vert_buffer.while_bound(Target::Array, || unsafe {
-                gl::EnableVertexAttribArray(0);
-                gl::VertexAttribPointer(
-                    0,
-                    2,
-                    gl::FLOAT,
-                    gl::FALSE,
-                    std::mem::size_of::<Vertex>() as GLsizei,
-                    0 as *const std::os::raw::c_void,
-                );
-                gl::EnableVertexAttribArray(1);
-                gl::VertexAttribPointer(
-                    1,
-                    4,
-                    gl::FLOAT,
-                    gl::FALSE,
-                    std::mem::size_of::<Vertex>() as GLsizei,
-                    std::mem::size_of::<[f32; 2]>()
-                        as *const std::os::raw::c_void,
-                );
-            });
+
+        let vao = &mut self.vao;
+        self.buffer.while_bound(Target::Array, || {
+            vao.set_attrib(0, vertex_attrib!(Vertex, pos));
+            vao.set_attrib(1, vertex_attrib!(Vertex, color));
         });
 
         self.program
