@@ -3,9 +3,37 @@ extern crate gl;
 extern crate sdl2;
 
 use gen_d::app_failure::AppFailure;
-use gen_d::drive_gl_app;
+use gen_d::{drive_gl_app, GlApp};
 
-mod app;
+struct MyApp {}
+
+impl GlApp for MyApp {
+    fn setup(&mut self) -> Result<(), AppFailure> {
+        unsafe {
+            gl::Enable(gl::DEBUG_OUTPUT);
+            gl::ClearColor(1.0, 1.0, 1.0, 1.0);
+            gl::DebugMessageCallback(gen_d::gl_debug_to_stdout, 0 as _);
+        }
+        Ok(())
+    }
+
+    fn render_frame(&mut self) -> Result<(), AppFailure> {
+        // no-op
+        unsafe {
+            gl::Clear(gl::COLOR_BUFFER_BIT);
+        }
+        return Ok(());
+    }
+
+    fn on_viewport_resize(
+        &mut self,
+        width: i32,
+        height: i32,
+    ) -> Result<(), AppFailure> {
+        println!("resized {:?}, {:?}", width, height);
+        Ok(())
+    }
+}
 
 fn main() -> Result<(), AppFailure> {
     let sdl = sdl2::init()?;
@@ -21,12 +49,7 @@ fn main() -> Result<(), AppFailure> {
     window.gl_make_current(&context)?;
     gl::load_with(|s| video.gl_get_proc_address(s) as _);
 
-    unsafe {
-        gl::Enable(gl::DEBUG_OUTPUT);
-        gl::DebugMessageCallback(gen_d::gl_debug_to_stdout, 0 as _);
-    }
-
-    drive_gl_app(sdl.event_pump()?, &window, &mut app::MyApp::build())?;
+    drive_gl_app(sdl.event_pump()?, &window, &mut MyApp {})?;
 
     return Ok(());
 }
