@@ -12,9 +12,9 @@ pub extern "system" fn gl_debug_to_stdout(
     message_type: GLenum,
     id: GLuint,
     severity: GLenum,
-    length: GLsizei,
+    _length: GLsizei,
     message: *const GLchar,
-    user: *mut std::os::raw::c_void,
+    _user: *mut std::os::raw::c_void,
 ) -> () {
     let safe_msg = {
         let cstr = unsafe { std::ffi::CStr::from_ptr(message) };

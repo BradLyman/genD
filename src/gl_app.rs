@@ -20,6 +20,17 @@ pub trait GlApp {
     ) -> Result<(), AppFailure> {
         Ok(())
     }
+
+    /// Called when the mouse moves.
+    /// X and Y coords are relative to the window viewport.
+    /// x = 0 when the cursor is at the left of the viewport and
+    /// x = viewport-width when the cursor is at the right of the viewport.
+    /// y = 0 when the cursor at the top of the viewport and
+    /// y = viewport-height when the cursor is at the right of the viewport.
+    /// bottom of the screen.
+    fn on_mouse_move(&mut self, _x: i32, _y: i32) -> Result<(), AppFailure> {
+        Ok(())
+    }
 }
 
 ///
@@ -32,6 +43,12 @@ pub fn drive_gl_app<T: GlApp>(
     app: &mut T,
 ) -> Result<(), AppFailure> {
     app.setup()?;
+
+    {
+        let (w, h) = window.drawable_size();
+        app.on_viewport_resize(w as i32, h as i32)?;
+    }
+
     let mut running = true;
     while running {
         running = handle_events(app, &mut event_pump)?;
@@ -54,6 +71,7 @@ fn handle_events<T: GlApp>(
         use sdl2::event::Event;
         match event {
             Event::Quit { .. } => should_continue = false,
+            Event::MouseMotion { x, y, .. } => app.on_mouse_move(x, y)?,
             Event::Window { win_event: win, .. } => {
                 handle_window_event(app, &win)?
             }
@@ -73,6 +91,7 @@ fn handle_window_event<T: GlApp>(
     use sdl2::event::WindowEvent;
     match event {
         WindowEvent::Resized(w, h) => app.on_viewport_resize(*w, *h)?,
+        WindowEvent::SizeChanged(w, h) => app.on_viewport_resize(*w, *h)?,
         _ => (),
     }
     Ok(())

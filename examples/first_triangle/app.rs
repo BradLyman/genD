@@ -6,7 +6,6 @@ use gen_d::core_gl::vao::VAO;
 use gen_d::core_gl::Object;
 use gen_d::GlApp;
 use gl;
-use std;
 
 const VERT_SRC: &'static str = r###"
     #version 460
