@@ -49,18 +49,33 @@ impl GlApp for MyApp {
     fn render_frame(&mut self) -> Result<(), AppFailure> {
         self.view.set_gl_viewport();
         unsafe { gl::Clear(gl::COLOR_BUFFER_BIT) };
-        let color = [0.1, 0.15, 0.2, 1.0];
+
+        let color = [0.0, 0.15, 0.8, 1.0];
         self.triangles.set_vertices(&vec![
+            // t1
             Vertex {
-                pos: [-250.0, -250.0],
+                pos: [-self.x, -self.y],
+                color: color,
+            },
+            Vertex {
+                pos: [self.x, -self.y],
+                color: color,
+            },
+            Vertex {
+                pos: [-self.x, self.y],
+                color: color,
+            },
+            // t2
+            Vertex {
+                pos: [-self.x, self.y],
+                color: color,
+            },
+            Vertex {
+                pos: [self.x, -self.y],
                 color: color,
             },
             Vertex {
                 pos: [self.x, self.y],
-                color: [0.0, 0.8, 0.0, 1.0],
-            },
-            Vertex {
-                pos: [0.0, 250.0],
                 color: color,
             },
         ]);
