@@ -3,6 +3,7 @@ use core_gl;
 use core_gl::shader::Shader;
 use gl;
 use gl::types::{GLint, GLsizei, GLuint};
+use nalgebra;
 use std;
 use std::ffi::CString;
 
@@ -12,6 +13,27 @@ use std::ffi::CString;
 pub struct Program {
     id: GLuint,
     shaders: Vec<Shader>,
+}
+
+///
+/// Implement this trait for a type which can be used as a shader program
+/// uniform.
+///
+pub trait Uniform {
+    fn set_gl_value(&self, location: GLint);
+}
+
+impl Uniform for nalgebra::Matrix4<f32> {
+    fn set_gl_value(&self, location: GLint) {
+        unsafe {
+            gl::UniformMatrix4fv(
+                location,
+                1,
+                gl::FALSE,
+                self.as_slice().as_ptr(),
+            );
+        }
+    }
 }
 
 impl Program {
@@ -45,6 +67,11 @@ impl Program {
         unsafe { gl::UseProgram(self.id) };
         func();
         unsafe { gl::UseProgram(0) };
+    }
+
+    /// Set the value for a uniform at the specified location
+    pub fn set_uniform<T: Uniform>(&mut self, location: i32, uniform: &T) {
+        self.while_bound(|| uniform.set_gl_value(location));
     }
 
     /// Compile each shader and attach it to the underlying OpenGL Program

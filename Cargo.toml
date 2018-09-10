@@ -4,6 +4,8 @@ version = "0.1.0"
 authors = ["BradLyman <lyman.brad3211@gmail.com>"]
 
 [dependencies]
+nalgebra = "*"
+approx = "*"
 
 [dependencies.sdl2]
 version = "0.31"

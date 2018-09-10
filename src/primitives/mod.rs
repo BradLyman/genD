@@ -4,16 +4,20 @@ use core_gl::program::Program;
 use core_gl::shader::{Shader, Type};
 use core_gl::vao::VAO;
 use gl;
+use nalgebra::Matrix4;
 
 const VERT_SRC: &'static str = r###"
     #version 460
 
     layout (location = 0) in vec2 pos;
     layout (location = 1) in vec4 color;
+
+    layout (location = 0) uniform mat4 view;
+
     out vec4 varyColor;
     void main() {
         varyColor = color;
-        gl_Position = vec4(pos, 0.0, 1.0);
+        gl_Position = view * vec4(pos, 0.0, 1.0);
     }
 "###;
 
@@ -66,12 +70,17 @@ impl Triangles {
             .attach(Shader::with_source(Type::Vertex, VERT_SRC.to_string()))
             .attach(Shader::with_source(Type::Fragment, FRAG_SRC.to_string()))
             .link()?;
+        self.program.set_uniform(0, &Matrix4::identity());
         Ok(())
     }
 
     pub fn set_vertices(&mut self, vertices: &Vec<Vertex>) {
         self.buffer.write(Usage::StaticDraw, vertices);
         self.vertex_count = vertices.len() as i32;
+    }
+
+    pub fn set_view(&mut self, view: &Matrix4<f32>) {
+        self.program.set_uniform(0, view);
     }
 
     pub fn draw(&mut self) {
