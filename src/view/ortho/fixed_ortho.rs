@@ -2,12 +2,18 @@ use super::Viewport;
 use super::World;
 use nalgebra as na;
 
+/// The FixedOrtho type represents an orthographic coordinate space which
+/// does not change.
+/// This means that the world-coordinates stay the same regardless of the
+/// viewport size/aspect ratio. Static coordinates like this can make geometry
+/// distort when the viewport is resized.
 pub struct FixedOrtho {
     viewport: Viewport,
     world: World,
 }
 
 impl FixedOrtho {
+    /// Create a new instance with the specified world size.
     pub fn with_size(width: f32, height: f32) -> FixedOrtho {
         FixedOrtho {
             viewport: Viewport::new(),
@@ -27,10 +33,13 @@ impl FixedOrtho {
         self.viewport.set_gl_viewport();
     }
 
+    /// Get the Projection from world space to ndc space.
+    /// Use this for shaders and similar.
     pub fn projection(&self) -> &na::Matrix4<f32> {
         self.world.projection.as_matrix()
     }
 
+    /// Map viewport coordinates into world space.
     pub fn to_world_coords(&self, viewport_coords: (f32, f32)) -> (f32, f32) {
         let (ndc_x, ndc_y) = self.viewport.to_ndc(viewport_coords);
         let world_coord = self

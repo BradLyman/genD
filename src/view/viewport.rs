@@ -1,15 +1,18 @@
 use gl;
 
+/// The Viewport type represents the viewport dimensions in pixels.
 pub struct Viewport {
     width: f32,
     height: f32,
 }
 
 impl Viewport {
+    /// Create a new viewport with non-zero dimensions.
     pub fn new() -> Viewport {
         Viewport::with_size(1.0, 1.0)
     }
 
+    /// Create a new viewport with the specified dimensions.
     pub fn with_size(width: f32, height: f32) -> Viewport {
         Viewport {
             width: width,
@@ -17,11 +20,16 @@ impl Viewport {
         }
     }
 
+    /// Resize the viewport
     pub fn resize(&mut self, width: f32, height: f32) {
         self.width = width;
         self.height = height;
     }
 
+    /// Map the provided coordinates from viewport-space into normalized
+    /// device coordinates.
+    /// e.g. the left of the screen maps from 0 -> -1.0, and the right of the
+    /// screen maps from width -> 1.0.
     pub fn to_ndc(&self, viewport_coords: (f32, f32)) -> (f32, f32) {
         let (x, y) = viewport_coords;
         let ndc_x = {
@@ -35,6 +43,7 @@ impl Viewport {
         (ndc_x, ndc_y)
     }
 
+    /// Set the OpenGL viewport to match the viewport size.
     pub fn set_gl_viewport(&self) {
         unsafe { gl::Viewport(0, 0, self.width as i32, self.height as i32) };
     }
@@ -48,7 +57,6 @@ mod test {
 
     use super::*;
     use nearly_equal;
-    use std;
 
     const VIEWPORT_WIDTH: f32 = 10.0;
     const VIEWPORT_HEIGHT: f32 = 10.0;

@@ -1,6 +1,13 @@
+//! This module hosts all 2d orthographic projections
+
 use super::Viewport;
 use nalgebra as na;
 
+/// The world type represents the part of the world which is visible on screen.
+/// World width and height are the arbitrary width and height of the visible
+/// world. With any ortho setup, the top of the viewport will be mapped to
+/// world.height/2 and the bottom will be mapped to -world.height/2. The same
+/// holds true for the width.
 #[derive(Copy, Clone, Debug)]
 struct World {
     width: f32,
@@ -9,6 +16,7 @@ struct World {
 }
 
 impl World {
+    /// Create a new world with dimensions
     pub fn with_size(width: f32, height: f32) -> World {
         World {
             width: width,
@@ -17,6 +25,8 @@ impl World {
         }
     }
 
+    /// Resize the world.
+    /// Recomputes the world's projection into normalized-device-coordinates.
     pub fn resize(&mut self, width: f32, height: f32) {
         self.width = width;
         self.height = height;
